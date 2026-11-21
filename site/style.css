@@ -615,3 +615,8 @@ table.kv tr + tr th, table.kv tr + tr td { border-top: 1px solid var(--border); 
 .src-link a { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); text-decoration: none; border-bottom: 1px dashed var(--border); }
 .src-link a:hover { color: var(--text); }
 .src-link svg { width: 15px; height: 15px; fill: currentColor; }
+.adv > summary { cursor: pointer; font-weight: 600; font-size: 14.5px; color: var(--text-2); list-style: none; display: flex; align-items: center; gap: 8px; }
+.adv > summary::-webkit-details-marker { display: none; }
+.adv > summary::before { content: "▸"; color: var(--text-3); transition: transform .2s; }
+.adv[open] > summary::before { transform: rotate(90deg); }
+.adv[open] > summary { color: var(--text); margin-bottom: 8px; }
