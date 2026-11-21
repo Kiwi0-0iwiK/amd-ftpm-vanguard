@@ -198,7 +198,8 @@ window.I18N = window.I18N || {};
       ],
       cmdNote: '<code>-ExecutionPolicy Bypass</code> applies to this one run only; it does not change any system setting.',
       copy: 'Copy', copied: 'Copied',
-      sampleH: 'Sample output (from the PC in this investigation, trimmed)',
+      sampleH: 'Sample output (from the PC in this investigation, script 2026.11.22, trimmed)',
+      shortNote: '<strong>"closed after N s, too short to tell" is normal.</strong> The entries of just a few seconds (usually 2–5 s) are mostly Vanguard loading briefly when the Riot Client launcher opens and unloading right away; an update also loads the old version first and swaps in the new one a few seconds later. The fTPM failure only comes 100+ seconds after a load, so these never reach it and do not affect the chip (none of the 12 short loads on this PC had a TPM error). Entries of tens of seconds to a few minutes are games that were opened and closed quickly. None of these count toward the verdict.',
       resultH: 'Reading the result',
       results: [
         ['MATCH', 'Match', 'The TPM failed after Vanguard loaded in at least 2 sessions and in at least half of the sessions long enough to tell. Same as this investigation (the delay may differ per PC).'],
@@ -218,6 +219,8 @@ window.I18N = window.I18N || {};
       othersH: 'What else failed in the same second', noOthers: 'Nothing else failed with it.', times: (n) => `${n}×`,
       vgkH: 'Vanguard version (build time, UTC)', noVgk: 'This result file has no Vanguard version (older script).', failedOf: (f, e) => `${f} of ${e} sessions failed`,
       notAmd: 'This PC does not have an AMD CPU, so it is outside the scope of this investigation; treat the result as informational.',
+      shortH: 'Loads of only a few seconds',
+      shortDesc: (n) => `Vanguard unloaded within 10 seconds ${n} time${n === 1 ? '' : 's'}. This is mostly the brief load when the Riot Client launcher opens (or updates) and is normal: it ends long before the point where the fTPM fails, does not affect the chip, and does not count toward the verdict.`,
     },
     sh: {
       h: 'Share anonymously so more cases get noticed',

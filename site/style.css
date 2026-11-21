@@ -453,6 +453,7 @@ pre.term .warn { color: #f2c46b; }
 pre.term .bad { color: #ff8a8a; font-weight: 600; }
 pre.term .ok { color: #7fdc8a; }
 pre.term .dim { color: #7c818c; }
+.term-note { margin: 4px 0 0; }
 .sub-h { font-size: 16px; margin: 22px 0 10px; }
 .results { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .results .r { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }

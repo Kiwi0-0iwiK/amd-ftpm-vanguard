@@ -687,7 +687,7 @@
       if (/MATCH|符合/.test(ln)) return `<span class="bad">${ln}</span>`;
       if (/normally|正常回應/.test(ln)) return `<span class="ok">${ln}</span>`;
       if (/TPM failed|outside a Vanguard|不在 Vanguard/.test(ln)) return `<span class="warn">${ln}</span>`;
-      if (/no TPM failure|game closed|^\s*…/.test(ln)) return `<span class="dim">${ln}</span>`;
+      if (/no TPM failure|game closed|too short|^\s*…/.test(ln)) return `<span class="dim">${ln}</span>`;
       return ln;
     }).join('\n');
   }
@@ -820,6 +820,11 @@
         return `<h4>${esc(A.vgkH)}</h4>` + (vg.length
           ? `<table class="kv">${vg.map(([k, g]) => `<tr><th><code>${esc(k.replace('T', ' ').replace('Z', ''))}</code></th><td>${esc(A.failedOf(g.failed, g.eligible))}</td></tr>`).join('')}</table>`
           : `<p class="small top0">${esc(A.noVgk)}</p>`);
+      })() +
+      (() => {
+        // 只載入幾秒就卸載的（開 Riot Client 啟動器、更新時的短暫載入）：說明這是正常的
+        const n = d.sessions.filter((s) => s.off === null && typeof s.dur === 'number' && s.dur < 10).length;
+        return n ? `<h4>${esc(A.shortH)}</h4><p class="small top0">${esc(A.shortDesc(n))}</p>` : '';
       })() +
       (!d.amd ? `<p class="an-warn">${esc(A.notAmd)}</p>` : '');
     $('#an-out').hidden = false;

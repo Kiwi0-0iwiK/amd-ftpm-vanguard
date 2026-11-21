@@ -197,7 +197,8 @@ window.I18N['zh-TW'] = {
     ],
     cmdNote: '<code>-ExecutionPolicy Bypass</code> 只對這一次執行有效，不會改變系統設定。',
     copy: '複製', copied: '已複製',
-    sampleH: '範例輸出（調查用的這台電腦，節錄）',
+    sampleH: '範例輸出（調查用的這台電腦，腳本 2026.11.22，節錄）',
+    shortNote: '<strong>「N 秒就關了，太短無法判斷」是正常的。</strong>只有幾秒（通常 2～5 秒）的那幾筆，多半是打開 Riot Client 啟動器時，Vanguard 短暫載入一下就卸載；更新時也會先載入舊版、幾秒後再換成新版。fTPM 要到載入後一百多秒才會出錯，這幾秒碰不到那個時間點，不會影響晶片（這台電腦的 12 次短暫載入都沒有 TPM 錯誤）。幾十秒到幾分鐘的，則是遊戲開了一下就關掉。這些場次都不算進判斷。',
     resultH: '結果怎麼看',
     results: [
       ['MATCH', '符合', 'Vanguard 載入後 TPM 指令失敗，至少 2 場、而且佔能判斷的場次一半以上。和這份調查的狀況一樣（出錯的秒數每台可能不同）。'],
@@ -217,6 +218,8 @@ window.I18N['zh-TW'] = {
     othersH: '同一秒還出錯的東西', noOthers: '沒有其他東西跟著出錯。', times: (n) => `${n} 次`,
     vgkH: 'Vanguard 版本（建置時間 UTC）', noVgk: '這份結果檔沒有記錄 Vanguard 版本（舊版腳本）。', failedOf: (f, e) => `${e} 場出錯 ${f} 場`,
     notAmd: '這台不是 AMD CPU，不在這份調查的範圍內，結果僅供參考。',
+    shortH: '只載入幾秒的紀錄',
+    shortDesc: (n) => `有 ${n} 次 Vanguard 載入不到 10 秒就卸載。這多半是打開 Riot Client 啟動器（或更新）時的短暫載入，是正常的；還沒到 fTPM 出錯的時間點，不會影響晶片，也不算進判斷。`,
   },
   sh: {
     h: '匿名分享，讓更多案例被看見',

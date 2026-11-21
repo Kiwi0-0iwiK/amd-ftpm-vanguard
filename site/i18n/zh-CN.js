@@ -196,7 +196,8 @@ window.I18N['zh-CN'] = {
     ],
     cmdNote: '<code>-ExecutionPolicy Bypass</code> 只对这一次运行有效，不会更改系统设置。',
     copy: '复制', copied: '已复制',
-    sampleH: '示例输出（本次调查用的电脑，节选）',
+    sampleH: '示例输出（本次调查用的电脑，脚本 2026.11.22，节选）',
+    shortNote: '<strong>“N 秒就關了，太短無法判斷”（N 秒就关了，太短无法判断）是正常的。</strong>只有几秒（通常 2～5 秒）的那几条，多半是打开 Riot Client 启动器时，Vanguard 短暂加载一下就卸载；更新时也会先加载旧版、几秒后再换成新版。fTPM 要到加载后一百多秒才会出错，这几秒碰不到那个时间点，不会影响芯片（这台电脑的 12 次短暂加载都没有 TPM 错误）。几十秒到几分钟的，则是游戏开了一下就关掉。这些场次都不计入判断。',
     resultH: '结果怎么看',
     results: [
       ['MATCH', '符合', 'Vanguard 加载后 TPM 命令失败，至少 2 场、而且占能判断的场次一半以上。和本次调查的情况一样（出错的秒数每台可能不同）。'],
@@ -216,6 +217,8 @@ window.I18N['zh-CN'] = {
     othersH: '同一秒还出错的东西', noOthers: '没有其他东西跟着出错。', times: (n) => `${n} 次`,
     vgkH: 'Vanguard 版本（构建时间 UTC）', noVgk: '这份结果文件没有记录 Vanguard 版本（旧版脚本）。', failedOf: (f, e) => `${e} 场出错 ${f} 场`,
     notAmd: '这台不是 AMD CPU，不在本次调查范围内，结果仅供参考。',
+    shortH: '只加载几秒的记录',
+    shortDesc: (n) => `有 ${n} 次 Vanguard 加载不到 10 秒就卸载。这多半是打开 Riot Client 启动器（或更新）时的短暂加载，是正常的；还没到 fTPM 出错的时间点，不会影响芯片，也不计入判断。`,
   },
   sh: {
     h: '匿名分享，让更多案例被看见',
