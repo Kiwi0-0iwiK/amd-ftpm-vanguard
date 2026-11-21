@@ -1,0 +1,1 @@
+window.DOWNLOADS = {"ps1": {"sha256": "fd5f16ede432c93939e85c17ad6e8d63086d97f96c93e78cbe731a6b2517477e", "size": 17285}, "bat": {"sha256": "60eb1e59c8fd90540ca44389bf5b2c36aed283db3daa24120b418cf157ddf7cb", "size": 17842}};

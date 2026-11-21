@@ -1,0 +1,75 @@
+AMD fTPM / Vanguard check result (test fixture: synthetic: file claims MATCH but only 1 of 5 sessions failed; server must recompute POSSIBLE)
+
+-----BEGIN FTPM-CHECK-----
+{
+  "v": 2,
+  "sv": "2026.11.21",
+  "id": "0000000000000005",
+  "created": "2026-11-21",
+  "days": 30,
+  "admin": true,
+  "cpu": "AMD Ryzen 7 9800X3D 8-Core Processor",
+  "board": "ASUSTeK COMPUTER INC. TUF GAMING B850-PLUS WIFI",
+  "bios": "1804",
+  "biosDate": "2026-09-15",
+  "os": "Microsoft Windows 11 Pro build 26200",
+  "tpm": "AMD 6.33.0.6",
+  "tpmSrc": "wmi",
+  "amd": true,
+  "ftpm": true,
+  "eligible": 5,
+  "vanguard": true,
+  "loads": 57,
+  "tpm17": 339,
+  "tpm14": 345,
+  "ordinals": {
+    "378": 301,
+    "361": 2,
+    "376": 9,
+    "374": 18,
+    "379": 6,
+    "290": 1,
+    "382": 2
+  },
+  "outside": 18,
+  "tpmNow": "ok",
+  "verdict": "MATCH",
+  "sessions": [
+    {
+      "t": "2026-11-03 23:51",
+      "off": 120.0,
+      "dur": 154,
+      "ended": true,
+      "others": []
+    },
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    },
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    },
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    },
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    }
+  ]
+}
+-----END FTPM-CHECK-----

@@ -1,0 +1,9 @@
+# 原始事件匯出（含 SSID、介面 GUID）、未遮蔽的截圖、真實結果檔
+data/raw/
+# 本機測試用的 Turnstile 測試祕密、wrangler 本機資料庫
+.dev.vars
+.wrangler/
+node_modules/
+__pycache__/
+# 建置產物（離線單檔版放在 GitHub Releases）
+dist/

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WiFi 消失調查</title>
+  <meta name="description" content="RTL8922AE 網卡在 Valorant 啟動約 110 秒後消失的調查時間軸：事件記錄、測試過程與結論。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d95926'/%3E%3Cpath d='M6 13a14 14 0 0 1 20 0M10 17.5a8 8 0 0 1 12 0M14 22a2.6 2.6 0 0 1 4 0' stroke='white' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+  <!-- FONTS:BEGIN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <!-- FONTS:END -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="top" id="top">
+    <div class="wrap">
+      <a class="brand" href="#intro"><span data-i="ui.brand"></span></a>
+      <nav class="nav" id="nav">
+        <a href="#impact" data-i="ui.nav.impact"></a>
+        <a href="#overview" data-i="ui.nav.overview"></a>
+        <a href="#timing" data-i="ui.nav.timing"></a>
+        <a href="#ms" data-i="ui.nav.ms"></a>
+        <a href="#story" data-i="ui.nav.story"></a>
+        <a href="#hyp" data-i="ui.nav.hyp"></a>
+        <a href="#test" data-i="ui.nav.test"></a>
+        <a href="#stats" data-i="ui.nav.stats"></a>
+        <a href="#shots" data-i="ui.nav.shots"></a>
+        <a href="#data" data-i="ui.nav.data"></a>
+      </nav>
+      <div class="seg" id="lang-switch" role="group" aria-label="Language"></div>
+      <button class="theme-btn" id="theme-btn" type="button"></button>
+    </div>
+  </header>
+
+  <!-- ============ 開場：介紹 ============ -->
+  <section class="intro" id="intro">
+    <div class="intro-hero">
+      <div class="wrap">
+        <div class="kicker" data-i="intro.kicker"></div>
+        <h1 class="intro-title" data-i="intro.title"></h1>
+        <p class="intro-sub" data-i="intro.sub"></p>
+      </div>
+      <a class="cue" href="#scrolly"><span data-i="intro.cue"></span><i></i></a>
+    </div>
+
+    <div class="scrolly wrap" id="scrolly">
+      <div class="viz-col">
+        <div class="viz-sticky">
+          <svg class="viz st-0" id="viz" viewBox="0 0 400 400" role="img" aria-label="">
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0 0L10 5L0 10z" class="arr-head"/>
+              </marker>
+            </defs>
+
+            <!-- 連線 -->
+            <path class="link link-vt" d="M110 128 C110 170 110 190 110 232" marker-end="url(#arr)"/>
+            <path class="link link-tw" d="M170 280 C215 280 225 230 262 214" marker-end="url(#arr)"/>
+            <path class="bolt" d="M196 262l14-12-4 10 14-6-16 18 4-10z"/>
+
+            <!-- Vanguard -->
+            <g class="node n-vgk" transform="translate(26 50)">
+              <rect width="184" height="78" rx="14"/>
+              <path class="glyph" d="M20 24l14 30 14-30" />
+              <text x="58" y="36" class="t1" data-i="intro.viz.vgk"></text>
+              <text x="58" y="56" class="t2" data-i="intro.viz.vgkSub"></text>
+            </g>
+
+            <!-- 計時器 -->
+            <g class="timer" transform="translate(300 92)">
+              <circle r="52" class="ring-bg"/>
+              <circle r="52" class="ring" id="ring" transform="rotate(-90)"/>
+              <text y="8" class="tnum" id="tnum">0</text>
+              <text y="30" class="tunit" data-i="intro.viz.sec"></text>
+            </g>
+
+            <!-- fTPM -->
+            <g class="node n-tpm" transform="translate(40 232)">
+              <rect width="130" height="96" rx="12"/>
+              <g class="pins">
+                <path d="M20 0v-8M40 0v-8M60 0v-8M80 0v-8M100 0v-8M20 96v8M40 96v8M60 96v8M80 96v8M100 96v8"/>
+              </g>
+              <text x="65" y="44" class="t1 c" data-i="intro.viz.tpm"></text>
+              <text x="65" y="64" class="t2 c" data-i="intro.viz.tpmSub"></text>
+              <g class="pulses"><circle cx="65" cy="48" r="10"/><circle cx="65" cy="48" r="10"/><circle cx="65" cy="48" r="10"/></g>
+            </g>
+            <text x="105" y="352" class="note n-fail6" data-i="intro.viz.fail6"></text>
+
+            <!-- WiFi 網卡 -->
+            <g class="node n-wifi" transform="translate(240 178)">
+              <rect width="130" height="110" rx="14"/>
+              <g class="waves" transform="translate(65 52)">
+                <path d="M-30-10a42 42 0 0 1 60 0"/><path d="M-19 1a27 27 0 0 1 38 0"/><path d="M-8 12a11 11 0 0 1 16 0"/>
+              </g>
+              <path class="cross" d="M45 30l40 40M85 30l-40 40"/>
+              <text x="65" y="88" class="t1 c" data-i="intro.viz.wifi"></text>
+              <text x="65" y="103" class="t2 c" data-i="intro.viz.wifiSub"></text>
+            </g>
+            <g class="badge43" transform="translate(305 168)">
+              <rect x="-38" y="-14" width="76" height="26" rx="13"/>
+              <text y="4" class="c" data-i="intro.viz.code43"></text>
+            </g>
+
+            <!-- 三個無效修正 -->
+            <g class="fixes">
+              <g transform="translate(232 316)"><rect width="44" height="24" rx="12"/><text x="22" y="16" class="c" data-i="intro.viz.fix1"></text><path d="M4 12h36"/></g>
+              <g transform="translate(283 316)"><rect width="44" height="24" rx="12"/><text x="22" y="16" class="c" data-i="intro.viz.fix2"></text><path d="M4 12h36"/></g>
+              <g transform="translate(334 316)"><rect width="44" height="24" rx="12"/><text x="22" y="16" class="c" data-i="intro.viz.fix3"></text><path d="M4 12h36"/></g>
+            </g>
+
+            <!-- 連線 vs 閒置 -->
+            <g class="split-res">
+              <g transform="translate(232 306)" class="res-ok"><rect width="70" height="56" rx="12"/><text x="35" y="22" class="c lbl" data-i="intro.viz.conn"></text><text x="35" y="46" class="c big" id="viz-ok">24/24</text></g>
+              <g transform="translate(308 306)" class="res-bad"><rect width="70" height="56" rx="12"/><text x="35" y="22" class="c lbl" data-i="intro.viz.idle"></text><text x="35" y="46" class="c big" id="viz-bad">12/12</text></g>
+            </g>
+
+            <!-- 手機熱點 -->
+            <g class="phone" transform="translate(305 314)">
+              <rect x="-17" y="0" width="34" height="56" rx="7"/>
+              <path class="pw" d="M-9 22a13 13 0 0 1 18 0M-4 28a6 6 0 0 1 8 0"/>
+              <text x="30" y="34" class="ph-lbl" data-i="intro.viz.phone"></text>
+            </g>
+            <path class="link link-phone" d="M305 312 L305 292" />
+
+            <!-- step 7：fTPM 出錯可能拖下水的東西 -->
+            <g class="fan">
+              <path class="fl" d="M170 270 C200 270 200 64 226 64"/>
+              <path class="fl" d="M170 276 C205 276 205 144 226 144"/>
+              <path class="fl" d="M170 282 C205 282 205 224 226 224"/>
+              <path class="fl" d="M170 288 C200 288 200 304 226 304"/>
+              <g class="fb fb-hit" transform="translate(226 40)"><rect width="164" height="48" rx="12"/><text x="14" y="21" class="ft1" data-i="intro.viz.fan1"></text><text x="14" y="38" class="ft2" data-i="intro.viz.fan1s"></text></g>
+              <g class="fb fb-maybe" transform="translate(226 120)"><rect width="164" height="48" rx="12"/><text x="14" y="21" class="ft1" data-i="intro.viz.fan2"></text><text x="14" y="38" class="ft2" data-i="intro.viz.fan2s"></text></g>
+              <g class="fb" transform="translate(226 200)"><rect width="164" height="48" rx="12"/><text x="14" y="21" class="ft1" data-i="intro.viz.fan3"></text><text x="14" y="38" class="ft2" data-i="intro.viz.fan3s"></text></g>
+              <g class="fb" transform="translate(226 280)"><rect width="164" height="48" rx="12"/><text x="14" y="21" class="ft1" data-i="intro.viz.fan4"></text><text x="14" y="38" class="ft2" data-i="intro.viz.fan4s"></text></g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="steps" id="steps"></div>
+    </div>
+
+    <div class="intro-cta wrap">
+      <p data-i="intro.cta"></p>
+      <a class="btn" href="#test"><span data-i="intro.ctaBtn"></span> →</a>
+    </div>
+  </section>
+
+  <!-- ============ 完整報告 ============ -->
+  <main class="wrap report" id="report">
+    <section class="hero reveal">
+      <div class="eyebrow" data-i="report.eyebrow"></div>
+      <h2 class="h1" id="report-h1"></h2>
+      <p class="lede" data-i="report.lede"></p>
+      <div class="chain" id="chain" aria-label="trigger chain"></div>
+      <p class="scope" data-i="report.scope"></p>
+      <div class="tiles" id="tiles"></div>
+      <div class="fix">
+        <h3 data-i="report.fixTitle"></h3>
+        <ol id="workaround"></ol>
+      </div>
+    </section>
+
+    <section class="block reveal" id="impact">
+      <h2 data-i="impact.h"></h2>
+      <p class="desc" data-i="impact.desc"></p>
+      <div class="impact" id="impact-list"></div>
+      <div class="callout">
+        <p data-i="impact.rule"></p>
+        <a class="btn btn-sm" href="#test"><span data-i="impact.ruleBtn"></span> →</a>
+      </div>
+      <p class="sources" id="impact-sources"></p>
+    </section>
+
+    <section class="block reveal" id="overview">
+      <h2 data-i="overview.h"></h2>
+      <p class="desc" data-i="overview.desc"></p>
+      <div class="card">
+        <div class="toolbar" id="lane-presets">
+          <button class="chip on" data-range="all" type="button" data-i="overview.presets.all"></button>
+          <button class="chip" data-range="peak" type="button" data-i="overview.presets.peak"></button>
+          <button class="chip" data-range="week" type="button" data-i="overview.presets.week"></button>
+          <span class="hint" data-i="overview.hint"></span>
+        </div>
+        <div class="legend">
+          <span><i class="lg-bar" style="background:var(--c-vgk)"></i><span data-i="overview.legend.session"></span></span>
+          <span><i class="lg-dia" style="background:var(--c-tpm)"></i><span data-i="overview.legend.tpmIn"></span></span>
+          <span><i class="lg-dia" style="border:2px solid var(--c-tpm)"></i><span data-i="overview.legend.tpmOut"></span></span>
+          <span><i class="lg-tri" style="color:var(--c-fail)"></i><span data-i="overview.legend.fail"></span></span>
+          <span><i class="lg-bar" style="background:var(--c-conn)"></i><span data-i="overview.legend.conn"></span></span>
+          <span><i class="lg-tick" style="background:var(--c-boot)"></i><span data-i="overview.legend.boot"></span></span>
+        </div>
+        <div id="chart-lanes" class="chart" role="img"></div>
+      </div>
+    </section>
+
+    <section class="block reveal" id="timing">
+      <h2 data-i="timing.h"></h2>
+      <p class="desc" data-i="timing.desc"></p>
+      <div class="split">
+        <div class="card">
+          <div class="legend">
+            <span><i class="lg-dot" style="background:var(--c-good)"></i><span data-i="timing.legend.ok"></span></span>
+            <span><i class="lg-tri" style="color:var(--c-fail)"></i><span data-i="timing.legend.fail"></span></span>
+            <span><i class="lg-ring" style="color:var(--c-boot)"></i><span data-i="timing.legend.down"></span></span>
+            <span class="legend-axis" data-i="timing.legend.axis"></span>
+          </div>
+          <div id="chart-offset" class="chart" role="img"></div>
+        </div>
+        <div class="sticky-side">
+          <div class="card">
+            <table class="matrix">
+              <thead><tr><th></th><th id="mx-c0"></th><th id="mx-c1"></th></tr></thead>
+              <tbody id="matrix"></tbody>
+            </table>
+          </div>
+          <p class="side-note" id="matrix-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block reveal" id="ms">
+      <h2 data-i="ms.h"></h2>
+      <p class="desc" data-i="ms.desc"></p>
+      <div class="card">
+        <div class="toolbar">
+          <label for="ms-sel" class="lbl" data-i="ms.pick"></label>
+          <select id="ms-sel" class="sel"></select>
+          <span class="seg seg-sm" id="ms-mode">
+            <button type="button" data-mode="ms" class="on" data-i="ms.modeMs"></button>
+            <button type="button" data-mode="us" data-i="ms.modeUs"></button>
+          </span>
+        </div>
+        <div id="chart-ms" class="chart" role="img"></div>
+        <p class="ms-caption" id="ms-caption"></p>
+      </div>
+    </section>
+
+    <section class="block reveal" id="story">
+      <h2 data-i="story.h"></h2>
+      <p class="desc" data-i="story.desc"></p>
+      <div id="story-list"></div>
+    </section>
+
+    <section class="block reveal" id="hyp">
+      <h2 data-i="hyp.h"></h2>
+      <p class="desc" data-i="hyp.desc"></p>
+      <div class="hyp" id="hyp-list"></div>
+    </section>
+
+    <section class="block reveal" id="test">
+      <h2 data-i="test.h"></h2>
+      <p class="desc" data-i="test.desc"></p>
+      <div class="prereq">
+        <h3 data-i="test.preH"></h3>
+        <ul class="ticks safe" id="test-pre"></ul>
+        <p class="pre-no" data-i="test.preNo"></p>
+        <p class="small" data-i="test.preHow"></p>
+      </div>
+      <div class="test-grid">
+        <div class="card">
+          <h3 data-i="test.whatH"></h3>
+          <ul class="ticks" id="test-what"></ul>
+          <h3 data-i="test.safeH"></h3>
+          <ul class="ticks safe" id="test-safe"></ul>
+          <p class="src-link"><a href="https://github.com/Kiwi0-0iwiK/amd-ftpm-vanguard/blob/main/site/downloads/check-amd-ftpm-vanguard.ps1" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span data-i="test.source"></span></a></p>
+        </div>
+        <div class="card">
+          <div class="dl-opt">
+            <h3 data-i="test.batH"></h3>
+            <p class="small top0" data-i="test.batDesc"></p>
+            <a class="btn dl" id="dl-bat" href="downloads/check-amd-ftpm-vanguard.bat" download="check-amd-ftpm-vanguard.bat">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+              <span data-i="test.dlBat"></span>
+            </a>
+            <ol class="howto" id="test-how-bat"></ol>
+            <div class="filemeta"><code>check-amd-ftpm-vanguard.bat</code> · SHA-256 <code class="hash" id="hash-bat"></code></div>
+          </div>
+          <div class="dl-opt">
+            <h3 data-i="test.psH"></h3>
+            <a class="btn dl btn-ghost" id="dl-ps1" href="downloads/check-amd-ftpm-vanguard.ps1" download="check-amd-ftpm-vanguard.ps1">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+              <span data-i="test.dlPs1"></span>
+            </a>
+            <ol class="howto" id="test-how"></ol>
+            <div class="cmd">
+              <code id="cmd-text">powershell -NoProfile -ExecutionPolicy Bypass -File .\check-amd-ftpm-vanguard.ps1</code>
+              <button type="button" class="copy" id="cmd-copy" data-i="test.copy"></button>
+            </div>
+            <p class="small" data-i="test.cmdNote"></p>
+            <div class="filemeta"><code>check-amd-ftpm-vanguard.ps1</code> · SHA-256 <code class="hash" id="hash-ps1"></code></div>
+          </div>
+        </div>
+      </div>
+      <div class="card term-card">
+        <h3 data-i="test.sampleH"></h3>
+        <pre class="term" id="sample"></pre>
+      </div>
+      <h3 class="sub-h" data-i="test.resultH"></h3>
+      <div class="results" id="test-results"></div>
+
+      <!-- 看自己的結果（全部在瀏覽器裡處理）＋匿名分享 -->
+      <div class="card analyze" id="analyze">
+        <h3 data-i="an.h"></h3>
+        <p class="small top0" data-i="an.desc"></p>
+        <label class="drop" id="drop" tabindex="0">
+          <input type="file" id="file-in" accept=".txt,text/plain" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 20h14"/></svg>
+          <span data-i="an.drop"></span>
+        </label>
+        <p class="an-err" id="an-err" hidden></p>
+        <div id="an-out" hidden>
+          <div class="an-head" id="an-head"></div>
+          <div class="an-grid">
+            <div class="an-chart"><div id="chart-mine" class="chart" role="img"></div></div>
+            <div class="an-side" id="an-side"></div>
+          </div>
+          <div class="share" id="share">
+            <h3 data-i="sh.h"></h3>
+            <p class="small top0" data-i="sh.desc"></p>
+            <details class="sh-prev"><summary data-i="sh.preview"></summary><pre class="term" id="sh-json"></pre></details>
+            <label class="consent"><input type="checkbox" id="sh-ok"> <span data-i="sh.consent"></span></label>
+            <div id="ts-box" class="ts-box"></div>
+            <div class="sh-actions">
+              <button class="btn" type="button" id="sh-send" disabled data-i="sh.send"></button>
+            </div>
+            <p class="sh-msg" id="sh-msg" role="status"></p>
+            <div class="withdraw">
+              <h4 data-i="sh.wdH"></h4>
+              <p class="small top0" data-i="sh.wdDesc"></p>
+              <button class="btn btn-ghost btn-sm" type="button" id="sh-del" data-i="sh.delete"></button>
+            </div>
+            <p class="small" data-i="sh.privacy"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 大家的結果（匿名分享的加總） -->
+    <section class="block reveal" id="stats">
+      <h2 data-i="st.h"></h2>
+      <p class="desc" data-i="st.desc"></p>
+      <div class="card st-empty" id="st-empty"></div>
+      <div id="st-body" hidden>
+        <div class="tiles" id="st-tiles"></div>
+        <div class="st-grid">
+          <div class="card"><h3 data-i="st.histH"></h3><div id="chart-hist" class="chart" role="img"></div></div>
+          <div class="card"><h3 data-i="st.othersH"></h3><p class="small top0" data-i="st.othersDesc"></p><div class="tablewrap"><table class="data" id="st-others"></table></div></div>
+        </div>
+        <div class="st-grid">
+          <div class="card"><h3 data-i="st.tpmH"></h3><div class="tablewrap"><table class="data" id="st-tpm"></table></div></div>
+          <div class="card"><h3 data-i="st.boardH"></h3><div class="tablewrap"><table class="data" id="st-board"></table></div></div>
+        </div>
+        <p class="small"><span id="st-updated"></span> · <a href="/api/stats?download=1" id="st-dl" data-i="st.download"></a></p>
+      </div>
+      <p class="small" data-i="st.privacy"></p>
+    </section>
+
+    <section class="block reveal" id="shots">
+      <h2 data-i="shots.h"></h2>
+      <p class="desc" data-i="shots.desc"></p>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section class="block reveal" id="data">
+      <h2 data-i="data.h"></h2>
+      <p class="desc" data-i="data.desc"></p>
+      <div class="card">
+        <details class="tbl">
+          <summary id="data-summary"></summary>
+          <div class="tablewrap"><table class="data" id="session-table"></table></div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap" id="footer"></footer>
+
+  <dialog class="lightbox" id="lightbox"><img alt=""><p></p></dialog>
+
+  <script src="vendor/echarts.min.js"></script>
+  <script src="data/timeline.js"></script>
+  <script src="data/sample.js"></script>
+  <script src="data/downloads.js"></script>
+  <script src="data/config.js"></script>
+  <script src="lib/result.js"></script>
+  <script src="i18n/zh-TW.js"></script>
+  <script src="i18n/zh-CN.js"></script>
+  <script src="i18n/en.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

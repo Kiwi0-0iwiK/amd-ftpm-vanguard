@@ -1,0 +1,53 @@
+AMD fTPM / Vanguard check result (test fixture: synthetic: Vanguard loaded 3 times, TPM never failed)
+
+-----BEGIN FTPM-CHECK-----
+{
+  "v": 2,
+  "sv": "2026.11.21",
+  "id": "0000000000000004",
+  "created": "2026-11-21",
+  "days": 30,
+  "admin": true,
+  "cpu": "AMD Ryzen 7 9800X3D 8-Core Processor",
+  "board": "ASUSTeK COMPUTER INC. TUF GAMING B850-PLUS WIFI",
+  "bios": "1804",
+  "biosDate": "2026-09-15",
+  "os": "Microsoft Windows 11 Pro build 26200",
+  "tpm": "AMD 6.33.0.6",
+  "tpmSrc": "wmi",
+  "amd": true,
+  "ftpm": true,
+  "eligible": 3,
+  "vanguard": true,
+  "loads": 3,
+  "tpm17": 0,
+  "tpm14": 0,
+  "ordinals": {},
+  "outside": 0,
+  "tpmNow": "ok",
+  "verdict": "NOMATCH",
+  "sessions": [
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    },
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    },
+    {
+      "t": "2026-11-20 20:00",
+      "off": null,
+      "dur": 3600,
+      "ended": true,
+      "others": []
+    }
+  ]
+}
+-----END FTPM-CHECK-----

@@ -1,0 +1,14 @@
+# Cloudflare Pages 設定（wrangler pages deploy / pages dev 會讀這個檔）
+name = "amd-ftpm-vanguard"
+pages_build_output_dir = "./site"
+compatibility_date = "2026-11-01"
+
+# 匿名分享的結果存在 D1（Cloudflare 的 SQLite）
+[[d1_databases]]
+binding = "DB"
+database_name = "amd-ftpm-vanguard"
+database_id = "d68fcc44-8585-4ab6-8c71-b6c97c01cdc8"
+
+# TURNSTILE_SECRET 是祕密，不寫在這裡：
+#   線上：npx wrangler pages secret put TURNSTILE_SECRET --project-name amd-ftpm-vanguard
+#   本機：.dev.vars（不進版本控制）

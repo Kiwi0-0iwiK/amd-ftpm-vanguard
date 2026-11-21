@@ -1,0 +1,5 @@
+# 其他文字檔一律 LF（放最前面：後面的規則優先）
+* text=auto eol=lf
+*.webp binary
+# 下載檔要跟網站上的 SHA-256 完全一致：不做任何換行轉換（.bat 需要 CRLF）
+site/downloads/* -text
