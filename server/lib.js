@@ -30,6 +30,17 @@ export function normalize(p) {
       if (OTHER_RE.test(k) && Number.isInteger(n) && n > 0 && n <= 1000) others[k] = n;
     }
   }
+  // 依 Vanguard 版本（key 是 vgk 的建置時間 UTC）
+  const vgk = {};
+  if (p.vgk && typeof p.vgk === 'object') {
+    for (const [k, g] of Object.entries(p.vgk).slice(0, 50)) {
+      if (!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(k) || !g || typeof g !== 'object') continue;
+      const e = int(g.eligible, 1, 100000); const f = int(g.failed, 0, 100000);
+      if (e === null || f === null || f > e) continue;
+      const offs = Array.isArray(g.offsets) ? g.offsets.filter((x) => typeof x === 'number' && x >= 0 && x <= 1800).slice(0, 500).map((x) => Math.round(x * 10) / 10) : [];
+      vgk[k] = { eligible: e, failed: f, offsets: offs };
+    }
+  }
   const ordinals = {};
   if (p.ordinals && typeof p.ordinals === 'object') {
     for (const [k, n] of Object.entries(p.ordinals).slice(0, 50)) {
@@ -50,7 +61,7 @@ export function normalize(p) {
     loads: int(p.loads, 0, 100000), tpm17: int(p.tpm17, 0, 1000000), tpm14: int(p.tpm14, 0, 1000000),
     outside: int(p.outside, 0, 100000), sessions: int(p.sessions, 0, 100000), failed: int(p.failed, 0, 100000),
     tpmNow: str(p.tpmNow, 30), lang: ['zh-TW', 'zh-CN', 'en'].includes(p.lang) ? p.lang : null,
-    offsets, others, ordinals,
+    offsets, others, ordinals, vgk,
   };
   if (rec.loads === null || rec.sessions === null || rec.failed === null) throw new Error('bad_counts');
   if (rec.failed > rec.sessions || offsets.length > rec.sessions) throw new Error('inconsistent');
@@ -101,6 +112,19 @@ const median = (a) => {
   return s.length % 2 ? s[(s.length - 1) / 2] : Math.round(((s[s.length / 2 - 1] + s[s.length / 2]) / 2) * 10) / 10;
 };
 
+// 依 Vanguard 版本加總：幾台電腦、能判斷的場次、出錯場次、出錯秒數中位數
+function byVgkAgg(recs) {
+  const m = new Map();
+  for (const r of recs) {
+    for (const [k, g] of Object.entries(r.vgk || {})) {
+      const a = m.get(k) || { key: k, pcs: 0, eligible: 0, failed: 0, offs: [] };
+      a.pcs++; a.eligible += g.eligible; a.failed += g.failed; a.offs.push(...(g.offsets || []));
+      m.set(k, a);
+    }
+  }
+  return [...m.values()].map(({ offs, ...a }) => ({ ...a, median: median(offs) })).sort((a, b) => b.key.localeCompare(a.key)).slice(0, 30);
+}
+
 // 所有紀錄 → 公開的統計（只有加總，不輸出任何單筆紀錄）
 export function aggregate(rows) {
   // 每筆都用目前的規則重算判定：規則改了，舊資料自動跟著新規則，不用重新上傳
@@ -149,6 +173,8 @@ export function aggregate(rows) {
     byCpu: group((r) => r.cpu).slice(0, 20),
     byBios: group((r) => (r.board && r.bios ? `${r.board} / ${r.bios}` : null)).slice(0, 20),
     byScript: group((r) => r.sv || (r.v === 1 ? 'v1 (2026.11.19)' : null)),
+    byVgk: byVgkAgg(recs),
+    vgkUnknown: recs.filter((r) => !r.vgk || !Object.keys(r.vgk).length).length,
     others: [...others.entries()].map(([key, pcs]) => ({ key, pcs })).sort((a, b) => b.pcs - a.pcs).slice(0, 20),
   };
 }

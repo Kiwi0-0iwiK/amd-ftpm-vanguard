@@ -1,1 +1,1 @@
-window.DOWNLOADS = {"ps1": {"sha256": "fd5f16ede432c93939e85c17ad6e8d63086d97f96c93e78cbe731a6b2517477e", "size": 17285}, "bat": {"sha256": "60eb1e59c8fd90540ca44389bf5b2c36aed283db3daa24120b418cf157ddf7cb", "size": 17842}};
+window.DOWNLOADS = {"ps1": {"sha256": "c736ddd0dc37595c0aa3240e2ad19491fffb605e4c5e34f4451caa3e121472b7", "size": 18119}, "bat": {"sha256": "0bf60be2eb37bc68fd1378ffbd0547cf11d79d95fdc3a452278c77cb941b5ab8", "size": 18688}};

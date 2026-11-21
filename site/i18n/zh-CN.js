@@ -214,6 +214,7 @@ window.I18N['zh-CN'] = {
     loads: 'Vanguard 加载次数', fails: '加载后 TPM 出错', median: '出错时间中位数（秒）', outside: '其他时间的 TPM 错误',
     sysH: '这台电脑', cpu: 'CPU', board: '主板', bios: 'BIOS', tpm: 'TPM', os: 'Windows', tpmNow: 'TPM 当前状态', noAdmin: '（读取不到）',
     othersH: '同一秒还出错的东西', noOthers: '没有其他东西跟着出错。', times: (n) => `${n} 次`,
+    vgkH: 'Vanguard 版本（构建时间 UTC）', noVgk: '这份结果文件没有记录 Vanguard 版本（旧版脚本）。', failedOf: (f, e) => `${e} 场出错 ${f} 场`,
     notAmd: '这台不是 AMD CPU，不在本次调查范围内，结果仅供参考。',
   },
   sh: {
@@ -237,6 +238,8 @@ window.I18N['zh-CN'] = {
     histH: '出错时间分布', histX: 'vgk 加载后第几秒', colFails: '次数',
     othersH: '同一秒还出错的东西', othersDesc: '每一项是“有几台电脑出现过”，可以看出 fTPM 出错时还拖垮了什么。', noOthers: '目前还没有。',
     tpmH: '按 fTPM 版本', boardH: '按主板',
+    vgkH: '按 Vanguard 版本', vgkDesc: '以 Vanguard 驱动的构建时间（UTC）区分版本。如果某一版之后出错率降下来，可能就是修好了。', colVgk: 'Vanguard 构建时间（UTC）', colRate: '出错场次 / 能判断的场次',
+    noVgk: '还没有记录 Vanguard 版本的数据（2026.11.22 以后的脚本才会记录）。', vgkUnknown: (n) => `另有 ${n} 台使用旧版脚本，没有 Vanguard 版本数据。`,
     colEvent: '事件（来源, ID）', colPcs: '电脑数', colMatch: '符合', colMedian: '出错时间中位数（秒）', colTpm: 'TPM 版本', colBoard: '主板',
     updated: (t) => `统计时间 ${t}`, download: '下载统计数据（JSON）',
     privacy: '分享的数据保存在 Cloudflare 上，只用于本次调查的统计，并可能整理成报告提交给 AMD 和 Riot（只有统计，不含单条数据）。分享过想撤回：到上面“看懂你的结果”拖入结果文件，点“撤回我的分享”。',

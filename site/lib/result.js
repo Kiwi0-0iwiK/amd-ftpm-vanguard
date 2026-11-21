@@ -7,6 +7,7 @@
  * 版本：
  * - 格式版本 v（結果檔 JSON 結構）：1 = 2026-11-19 第一版，2 = 2026-11-21（不預設秒數、記 eligible 與實際場次長度）
  * - 腳本版本 sv（日期字串，例如 2026.11.21）：只改判定或文字、沒改結構時，只升這個
+ *   2026.11.22：每場多記 vgk（Vanguard 驅動的建置時間），分享時變成依版本的統計 vgk
  * - 判定規則 RULE：規則改了就 +1，伺服器會用新規則重算所有舊資料
  *
  * 瀏覽器：<script src="lib/result.js"> 之後用 window.FTPM；Node／Pages Functions：import 或 require。
@@ -36,6 +37,20 @@
     return 'NODATA';
   }
 
+  // 依 Vanguard 版本：能判斷的場次（有出錯，或開了 10 分鐘以上）、出錯場次、出錯秒數。只有版本，沒有遊玩時間
+  function byVgk(sessions) {
+    const m = {};
+    for (const s of sessions) {
+      if (typeof s.vgk !== 'string' || !s.vgk) continue;
+      const failed = typeof s.off === 'number';
+      if (!failed && !(s.dur >= 600)) continue;
+      const g = m[s.vgk] || (m[s.vgk] = { eligible: 0, failed: 0, offsets: [] });
+      g.eligible++;
+      if (failed) { g.failed++; g.offsets.push(s.off); }
+    }
+    return m;
+  }
+
   function buildShare(d, lang) {
     const fails = d.sessions.filter((s) => typeof s.off === 'number');
     const others = {};
@@ -48,11 +63,11 @@
       amd: !!d.amd, ftpm: typeof d.ftpm === 'boolean' && (d.v >= 2 || d.tpm) ? d.ftpm : null, vanguard: !!d.vanguard,
       loads: d.loads, tpm17: d.tpm17, tpm14: d.tpm14, outside: d.outside, tpmNow: d.tpmNow, verdict: d.verdict,
       ordinals: d.ordinals || {}, sessions: d.sessions.length, failed: fails.length,
-      offsets: fails.map((s) => s.off), others, lang: lang || null,
+      offsets: fails.map((s) => s.off), others, vgk: byVgk(d.sessions), lang: lang || null,
     };
   }
 
-  const api = { RULE, FORMATS, parseResult, buildShare, deriveVerdict };
+  const api = { RULE, FORMATS, parseResult, buildShare, deriveVerdict, byVgk };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.FTPM = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

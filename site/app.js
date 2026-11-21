@@ -767,6 +767,12 @@
     const sys = [[A.cpu, d.cpu], [A.board, d.board], [A.bios, `${d.bios || '—'}${d.biosDate ? ` (${d.biosDate})` : ''}`], [A.tpm, d.tpm || A.noAdmin], [A.os, d.os], [A.tpmNow, d.tpmNow]];
     $('#an-side').innerHTML = `<h4>${esc(A.sysH)}</h4><table class="kv">${sys.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v ?? '—')}</td></tr>`).join('')}</table>` +
       `<h4>${esc(A.othersH)}</h4>` + (oRows.length ? `<table class="kv">${oRows.map(([k, n]) => `<tr><th><code>${esc(k)}</code></th><td>${esc(A.times(n))}</td></tr>`).join('')}</table>` : `<p class="small top0">${esc(A.noOthers)}</p>`) +
+      (() => {
+        const vg = Object.entries(window.FTPM.byVgk(d.sessions)).sort((a, b) => b[0].localeCompare(a[0]));
+        return `<h4>${esc(A.vgkH)}</h4>` + (vg.length
+          ? `<table class="kv">${vg.map(([k, g]) => `<tr><th><code>${esc(k.replace('T', ' ').replace('Z', ''))}</code></th><td>${esc(A.failedOf(g.failed, g.eligible))}</td></tr>`).join('')}</table>`
+          : `<p class="small top0">${esc(A.noVgk)}</p>`);
+      })() +
       (!d.amd ? `<p class="an-warn">${esc(A.notAmd)}</p>` : '');
     $('#an-out').hidden = false;
     drawn['chart-mine'] = true;
@@ -786,7 +792,7 @@
       animation: animate && !reduceMotion, animationDuration: 600, animationDelay: (i) => i * 20,
       textStyle: { fontFamily: K.sans },
       grid: { left: 112, right: 16, top: 30, bottom: 20 },
-      tooltip: { ...tooltipBase(K), trigger: 'item', confine: true, formatter: (p) => { const s = rows[p.value[1]]; return tip(s.t, [[L.tip.tpm, L.fmt.sec(s.off)], ...(s.others.length ? [[L.an.othersH, s.others.map(esc).join('<br>')]] : [])]); } },
+      tooltip: { ...tooltipBase(K), trigger: 'item', confine: true, formatter: (p) => { const s = rows[p.value[1]]; return tip(s.t, [[L.tip.tpm, L.fmt.sec(s.off)], ...(s.vgk ? [[L.an.vgkH, esc(s.vgk.replace('T', ' ').replace('Z', ''))]] : []), ...(s.others.length ? [[L.an.othersH, s.others.map(esc).join('<br>')]] : [])]); } },
       xAxis: { type: 'value', min: 0, max: XMAX, position: 'top', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: K.text3 }, splitLine: { lineStyle: { color: K.grid } } },
       yAxis: { type: 'category', inverse: true, data: rows.map((s) => s.t.slice(5)), axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: K.text2, fontFamily: K.mono, fontSize: 11 } },
       series: [{
@@ -898,6 +904,11 @@
     const g = (arr) => arr.map((x) => `<tr><td>${esc(x.key)}</td><td>${x.n}</td><td>${x.match} (${pct(x.match, x.n)})</td><td>${x.median ?? '—'}</td></tr>`);
     $('#st-tpm').innerHTML = table(g(S2.byTpm), [T.colTpm, T.colPcs, T.colMatch, T.colMedian]);
     $('#st-board').innerHTML = table(g(S2.byBoard), [T.colBoard, T.colPcs, T.colMatch, T.colMedian]);
+    const vg = S2.byVgk || [];
+    $('#st-vgk').innerHTML = vg.length
+      ? table(vg.map((x) => `<tr><td><code>${esc(x.key.replace('T', ' ').replace('Z', ''))}</code></td><td>${x.pcs}</td><td>${x.failed} / ${x.eligible} (${pct(x.failed, x.eligible)})</td><td>${x.median ?? '—'}</td></tr>`), [T.colVgk, T.colPcs, T.colRate, T.colMedian])
+      : `<tbody><tr><td class="note">${esc(T.noVgk)}</td></tr></tbody>`;
+    $('#st-vgk-note').textContent = S2.vgkUnknown ? T.vgkUnknown(S2.vgkUnknown) : '';
     $('#st-updated').textContent = T.updated(new Date(S2.updated).toLocaleString(L.meta.htmlLang));
     drawn['chart-hist'] = true;
     DRAW['chart-hist'](true);

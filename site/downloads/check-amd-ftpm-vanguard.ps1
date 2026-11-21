@@ -22,7 +22,7 @@
 param([int]$Days = 30)
 
 # 腳本版本：改了判定或輸出就更新日期（結果檔的格式版本 v 只有在 JSON 結構改變時才升）
-$ScriptVersion = '2026.11.21'
+$ScriptVersion = '2026.11.22'
 
 $ErrorActionPreference = 'SilentlyContinue'
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
@@ -112,6 +112,8 @@ Write-Section 'Each Vanguard load / 每次 Vanguard 載入'
 $sessions = @(); $records = New-Object System.Collections.Generic.List[object]; $windows = @(); $eligible = 0
 for ($i = 0; $i -lt $loads.Count; $i++) {
     $L = $loads[$i].TimeCreated
+    # vgk 的建置時間（FilterManager 事件 6 的 DeviceTime），用來分辨是哪一版 Vanguard
+    $build = ([string](Data $loads[$i] 'DeviceTime')) -replace '\.\d+Z$', 'Z'
     $next = if ($i + 1 -lt $loads.Count) { $loads[$i + 1].TimeCreated } else { $null }
     $u = $unloads | Where-Object { $_.TimeCreated -gt $L -and ($null -eq $next -or $_.TimeCreated -le $next) } | Select-Object -First 1
     $end = if ($u) { $u.TimeCreated } elseif ($next) { $next } else { Get-Date }
@@ -128,15 +130,25 @@ for ($i = 0; $i -lt $loads.Count; $i++) {
         $nearTxt = if ($near) { '  others: ' + ($near -join '; ') } else { '' }
         Write-Host ("  {0:yyyy-MM-dd HH:mm:ss}  TPM failed +{1,6:N1}s{2}" -f $L, $sec, $nearTxt) -ForegroundColor Yellow
         $sessions += $sec
-        $records.Add([ordered]@{ t = $L.ToString('yyyy-MM-dd HH:mm'); off = [math]::Round($sec, 1); dur = $dur; ended = [bool]$u; others = [string[]]$near })
+        $records.Add([ordered]@{ t = $L.ToString('yyyy-MM-dd HH:mm'); off = [math]::Round($sec, 1); dur = $dur; ended = [bool]$u; vgk = $build; others = [string[]]$near })
     } else {
         if ($dur -ge 600) { $eligible++ }   # 開了 10 分鐘以上都沒出錯，才算「確定沒出錯」
         $note = if ($dur -lt 600) { "(closed after {0:N0}s, too short to tell / {0:N0} 秒就關了，太短無法判斷)" -f $dur } else { "no TPM failure ({0:N0} min) / 沒有 TPM 錯誤（{0:N0} 分鐘）" -f ($dur / 60) }
         Write-Host ("  {0:yyyy-MM-dd HH:mm:ss}  {1}" -f $L, $note) -ForegroundColor DarkGray
-        $records.Add([ordered]@{ t = $L.ToString('yyyy-MM-dd HH:mm'); off = $null; dur = $dur; ended = [bool]$u; others = [string[]]@() })
+        $records.Add([ordered]@{ t = $L.ToString('yyyy-MM-dd HH:mm'); off = $null; dur = $dur; ended = [bool]$u; vgk = $build; others = [string[]]@() })
     }
 }
 if (-not $loads.Count) { Write-Host '  (no Vanguard loads in this period / 這段期間沒有 Vanguard 載入紀錄)' -ForegroundColor DarkGray }
+
+# 依 Vanguard 版本：能判斷的場次裡有幾場出錯（能判斷＝有出錯，或開了 10 分鐘以上）
+if ($records.Count) {
+    Write-Host ''
+    Write-Host '  By Vanguard build / 依 Vanguard 版本（vgk build time, UTC）:'
+    $records | Where-Object { $null -ne $_.off -or $_.dur -ge 600 } | Group-Object { $_.vgk } | Sort-Object Name | ForEach-Object {
+        $nf = @($_.Group | Where-Object { $null -ne $_.off }).Count
+        Write-Host ('    {0}  failed {1} / {2}' -f $(if ($_.Name) { $_.Name } else { 'unknown' }), $nf, $_.Count) -ForegroundColor $(if ($nf) { 'Yellow' } else { 'Green' })
+    }
+}
 
 # 不在任何一次「載入後 30 分鐘內」的 TPM 錯誤（例如 TPM 卡住期間 Windows 自己的 TPM 工作也跟著失敗）
 $other = @($tpm17 | Where-Object { $t = $_.TimeCreated; -not ($windows | Where-Object { $t -ge $_[0] -and $t -lt $_[1] }) } |

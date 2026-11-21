@@ -620,3 +620,5 @@ table.kv tr + tr th, table.kv tr + tr td { border-top: 1px solid var(--border); 
 .adv > summary::before { content: "▸"; color: var(--text-3); transition: transform .2s; }
 .adv[open] > summary::before { transform: rotate(90deg); }
 .adv[open] > summary { color: var(--text); margin-bottom: 8px; }
+.st-wide { margin-top: 12px; }
+.st-wide h3 { font-size: 15px; margin: 2px 0 8px; }

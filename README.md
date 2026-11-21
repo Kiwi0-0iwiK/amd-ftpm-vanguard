@@ -58,6 +58,8 @@ docs/DEVELOPMENT.md   developer notes (Traditional Chinese)
 
 - Result file format `v`: `1` (2026-11-19), `2` (2026-11-21: no fixed delay, real session end, `eligible`, TPM info without admin).
 - Script version `sv`: a date, bumped whenever detection or output changes.
+  - `2026.11.21`: first v2 script.
+  - `2026.11.22`: records the Vanguard driver build for every session (`vgk`, the build time from FilterManager event 6); shared as a per-build breakdown, shown as "By Vanguard version" in the statistics.
 - Verdict rule `RULE` in `site/lib/result.js`. The server never trusts the verdict written in a file: statistics always recompute it from the stored facts with the current rule, so old submissions follow rule changes without re-uploading.
 - Every format version keeps a fixture in `tests/fixtures/`; old result files must keep parsing.
 

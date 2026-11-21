@@ -216,6 +216,7 @@ window.I18N = window.I18N || {};
       loads: 'Vanguard loads', fails: 'TPM failures after load', median: 'Median time to failure (s)', outside: 'TPM failures at other times',
       sysH: 'This PC', cpu: 'CPU', board: 'Motherboard', bios: 'BIOS', tpm: 'TPM', os: 'Windows', tpmNow: 'TPM right now', noAdmin: '(could not read)',
       othersH: 'What else failed in the same second', noOthers: 'Nothing else failed with it.', times: (n) => `${n}×`,
+      vgkH: 'Vanguard version (build time, UTC)', noVgk: 'This result file has no Vanguard version (older script).', failedOf: (f, e) => `${f} of ${e} sessions failed`,
       notAmd: 'This PC does not have an AMD CPU, so it is outside the scope of this investigation; treat the result as informational.',
     },
     sh: {
@@ -239,6 +240,8 @@ window.I18N = window.I18N || {};
       histH: 'When the failures happen', histX: 'seconds after vgk loaded', colFails: 'Failures',
       othersH: 'What else failed in the same second', othersDesc: 'Each row is the number of PCs where it appeared: what else the failing fTPM took down.', noOthers: 'None yet.',
       tpmH: 'By fTPM version', boardH: 'By motherboard',
+      vgkH: 'By Vanguard version', vgkDesc: 'Versions are told apart by the Vanguard driver build time (UTC). If the failure rate drops after a given build, that build may have fixed it.', colVgk: 'Vanguard build (UTC)', colRate: 'Failed / sessions long enough to tell',
+      noVgk: 'No Vanguard version data yet (recorded by scripts from 2026.11.22 on).', vgkUnknown: (n) => `${n} more PC(s) used an older script without Vanguard version data.`,
       colEvent: 'Event (source, ID)', colPcs: 'PCs', colMatch: 'Match', colMedian: 'Median time to failure (s)', colTpm: 'TPM version', colBoard: 'Motherboard',
       updated: (t) => `Updated ${t}`, download: 'Download statistics (JSON)',
       privacy: 'Shared data is stored on Cloudflare, used only for this investigation\'s statistics, and may be compiled into a report for AMD and Riot (aggregates only, never single records). To withdraw a share: drop your result file in "Understand your result" above and press "Withdraw my share".',
