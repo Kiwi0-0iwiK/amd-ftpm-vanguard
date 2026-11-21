@@ -622,3 +622,6 @@ table.kv tr + tr th, table.kv tr + tr td { border-top: 1px solid var(--border); 
 .adv[open] > summary { color: var(--text); margin-bottom: 8px; }
 .st-wide { margin-top: 12px; }
 .st-wide h3 { font-size: 15px; margin: 2px 0 8px; }
+.back-pill { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 40; border: 0; border-radius: 999px; padding: 9px 18px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; background: var(--text); color: var(--surface); box-shadow: 0 8px 28px rgba(0,0,0,.28); }
+.back-pill:hover { transform: translateX(-50%) translateY(-2px); }
+.story li.flash .mcard { box-shadow: 0 0 0 2px var(--c-tpm); transition: box-shadow .3s; }

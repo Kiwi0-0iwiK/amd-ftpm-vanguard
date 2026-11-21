@@ -69,6 +69,7 @@ docs/DEVELOPMENT.md   developer notes (Traditional Chinese)
 python scripts/build-downloads.py     # .bat + SHA-256 from the .ps1
 python scripts/build-data.py          # site/data/timeline.js from exported events + data/milestones.json
 python scripts/build-offline.py       # dist/ single-file offline copy
+python scripts/stamp-assets.py        # content fingerprints (?v=...) on local .js/.css in index.html, so browsers never mix a new page with cached old code
 node tests/run.mjs                    # run before every deploy
 
 npx wrangler d1 execute amd-ftpm-vanguard --local --file schema.sql

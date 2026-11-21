@@ -301,7 +301,7 @@
       useUTC: true,
       animation: animate && !reduceMotion, animationDuration: 900, animationEasing: 'cubicOut',
       textStyle: { fontFamily: K.sans },
-      grid: { left: mobile ? 74 : 104, right: 18, top: 26, bottom: 64 },
+      grid: { left: mobile ? 74 : 104, right: 18, top: lanesMark ? 44 : 26, bottom: 64 },
       tooltip: { ...tooltipBase(K), trigger: 'item', confine: true },
       xAxis: {
         type: 'time', min: lanesRange[0], max: lanesRange[1],
@@ -332,6 +332,13 @@
       series: [
         {
           name: 'game', type: 'custom', renderItem: barItem(K.vgk, 0.46), encode: { x: [1, 2], y: 0 }, data: sess,
+          ...(lanesMark ? { markLine: {
+            silent: true, symbol: 'none', animation: false,
+            lineStyle: { color: K.tpm, type: 'dashed', width: 1.5 },
+            // 標籤放在圖表上方、橫的，才不會蓋住這個時間點旁邊的事件
+            label: { position: 'start', distance: 6, rotate: 0, formatter: lanesMark.label, color: K.text, fontSize: 12, fontWeight: 600, backgroundColor: K.surface, borderColor: K.tpm, borderWidth: 1, borderRadius: 4, padding: [3, 8] },
+            data: [{ xAxis: lanesMark.t }],
+          } } : {}),
           tooltip: {
             formatter: (p) => {
               const s = D.sessions[p.value[3]];
@@ -397,10 +404,12 @@
     if (lanesRange[0] !== T0 || lanesRange[1] !== T1) chart.dispatchAction({ type: 'dataZoom', startValue: lanesRange[0], endValue: lanesRange[1] });
   };
 
-  function zoomLanes(a, b, presetEl) {
+  let lanesMark = null;   // { t, label }：從調查歷程跳過來時標出的時間點
+  function zoomLanes(a, b, presetEl, mark) {
     lanesRange = [Math.max(a, T0), Math.min(b, T1)];
-    if (!drawn['chart-lanes']) { drawn['chart-lanes'] = true; chartObs.unobserve($('#chart-lanes')); DRAW['chart-lanes'](false); }
-    charts['chart-lanes'].dispatchAction({ type: 'dataZoom', startValue: lanesRange[0], endValue: lanesRange[1] });
+    lanesMark = mark || null;
+    if (!drawn['chart-lanes']) { drawn['chart-lanes'] = true; chartObs.unobserve($('#chart-lanes')); }
+    DRAW['chart-lanes'](false);   // 重畫才會套用標記；DRAW 結尾會縮放到 lanesRange
     $$('#lane-presets .chip').forEach((c) => c.classList.toggle('on', c === presetEl));
   }
   $$('#lane-presets .chip').forEach((c) => c.addEventListener('click', () => {
@@ -590,7 +599,11 @@
   function renderStory() {
     const box = $('#story-list');
     box.innerHTML = '';
-    const inData = (m) => m.ms >= T0 && m.ms <= T1;
+    const W = 45 * 60000;
+    const near = (t, x) => x >= t - W && x <= t + W;
+    // 前後 45 分鐘內有遊戲、TPM 錯誤或網卡故障才值得跳過去看
+    const hasNearby = (m) => (m.zoom ? zooms.some((z) => Math.abs(z.tpm - m.zoom) < 5000)
+      : m.ms >= T0 && m.ms <= T1 && (D.sessions.some((s) => near(m.ms, s.load)) || D.tpmBursts.some((b) => near(m.ms, b.start)) || D.wifiFails.some((w) => near(m.ms, w.start))));
     D.phases.forEach((ph) => {
       const P = pText(ph);
       const items = D.milestones.filter((m) => m.phase === ph.id);
@@ -600,7 +613,7 @@
         const hasTime = /T\d\d:\d\d/.test(m.t);
         const when = `${fDate(m.ms)}${hasTime ? ' ' + fHM(m.ms) : ''}`;
         const tags = (m.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
-        const jump = inData(m) ? `<button class="linkbtn" type="button" data-jump="${m.zoom || m.ms}" data-ms="${m.zoom ? 1 : 0}">${L.story.jump}</button>` : '';
+        const jump = hasNearby(m) ? `<button class="linkbtn" type="button" data-jump="${m.zoom || m.ms}" data-ms="${m.zoom ? 1 : 0}" data-title="${esc(M.title)}">${m.zoom ? L.story.jumpMs : L.story.jump}</button>` : '';
         return `<li class="v-${m.verdict}"><div class="mcard">
             <div class="mhead"><span class="mtime">${when}</span><span class="mtitle">${esc(M.title)}</span><span class="badge ${vc}">${vl}</span></div>
             <p class="mbody">${esc(M.body)}</p>
@@ -611,18 +624,53 @@
       box.insertAdjacentHTML('beforeend', `<div class="phase"><div class="phase-head"><h3>${esc(P.title)}</h3><span>${esc(P.sub)}</span></div><ol class="story">${ol}</ol></div>`);
     });
   }
+  // 平滑捲動到某個元素；捲完沒到位（被其他捲動打斷、或延遲載入的圖片推開版面）就直接對齊
+  function goTo(el, block = 'start') {
+    el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block });
+    setTimeout(() => {
+      const r = el.getBoundingClientRect();
+      const want = block === 'center' ? (innerHeight - r.height) / 2 : 60;
+      if (Math.abs(r.top - want) > 40) el.scrollIntoView({ behavior: 'auto', block });
+    }, 1000);
+  }
+
+  // 「回到調查歷程」：跳到圖表後出現在畫面底部，按了回到剛才那張卡片；捲回去看到那張卡片時自動消失
+  const backPill = document.createElement('button');
+  backPill.type = 'button'; backPill.className = 'back-pill'; backPill.hidden = true;
+  document.body.appendChild(backPill);
+  let backTo = null;
+  // 那張卡片「先離開畫面、再回到畫面」才收起按鈕（不靠計時，捲動慢的時候也不會誤判）
+  let backArmed = false;
+  const backObs = new IntersectionObserver((en) => {
+    const e = en[en.length - 1];
+    if (!e) return;
+    if (!e.isIntersecting) backArmed = true;
+    else if (backArmed) hideBack();
+  }, { threshold: 0.6 });
+  function hideBack() { backPill.hidden = true; backObs.disconnect(); }
+  function showBack(li) {
+    backTo = li; backPill.textContent = L.story.back; backPill.hidden = false; backObs.disconnect();
+    backArmed = false;
+    backObs.observe(li);
+  }
+  backPill.addEventListener('click', () => {
+    if (backTo) { goTo(backTo, 'center'); backTo.classList.add('flash'); setTimeout(() => backTo && backTo.classList.remove('flash'), 1600); }
+    hideBack();
+  });
+
   $('#story-list').addEventListener('click', (e) => {
     const b = e.target.closest('[data-jump]');
     if (!b) return;
     const t = +b.dataset.jump;
+    showBack(b.closest('li'));
     if (b.dataset.ms === '1') {
       const i = zooms.findIndex((z) => Math.abs(z.tpm - t) < 5000);
       if (i >= 0) { msIdx = i; sel.value = String(i); if (drawn['chart-ms']) DRAW['chart-ms'](true); }
-      $('#ms').scrollIntoView();
+      goTo($('#ms'));
       return;
     }
-    zoomLanes(t - 45 * 60000, t + 45 * 60000);
-    $('#overview').scrollIntoView();
+    zoomLanes(t - 45 * 60000, t + 45 * 60000, null, { t, label: `${fHM(t)}  ${b.dataset.title}` });
+    goTo($('#overview'));
   });
 
   function renderHyp() {

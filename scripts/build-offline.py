@@ -24,6 +24,7 @@ def js(path: Path) -> str:
 
 html = (SITE / "index.html").read_text(encoding="utf-8")
 html = re.sub(r"\s*<!-- FONTS:BEGIN -->.*?<!-- FONTS:END -->", "", html, flags=re.S)
+html = re.sub(r'(src|href)="([^"]+?)\?v=[0-9a-f]+"', lambda m: f'{m.group(1)}="{m.group(2)}"', html)   # 拿掉 stamp-assets.py 加的指紋
 html = html.replace('<link rel="stylesheet" href="style.css">',
                     "<style>\n" + (SITE / "style.css").read_text(encoding="utf-8") + "</style>")
 

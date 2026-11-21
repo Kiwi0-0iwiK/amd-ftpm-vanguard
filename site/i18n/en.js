@@ -150,7 +150,7 @@ window.I18N = window.I18N || {};
       h: 'Investigation timeline',
       desc: 'Starting from "is it the driver?": what was changed, what was tested, and what happened. Red marks ruled-out directions, orange marks key findings, green marks conclusions that held.',
       verdicts: { fail: 'Ruled out', pass: 'Confirmed', key: 'Key finding', info: 'Context' },
-      jump: 'Show on chart ↗',
+      jump: 'Show this moment in the event chart ↑', jumpMs: 'Show this failure, millisecond by millisecond ↑', back: '↓ Back to the timeline',
     },
     hyp: { h: 'Hypotheses', desc: 'Every direction that was suspected, and the evidence that ruled it out or supported it.', pass: '✓ Confirmed', fail: '✕ Ruled out' },
 
