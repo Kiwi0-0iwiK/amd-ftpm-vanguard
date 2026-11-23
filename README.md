@@ -50,7 +50,7 @@ site/                 static site (Cloudflare Pages)
 functions/api/        submit / delete / stats (Cloudflare Pages Functions)
 server/lib.js         validation, de-identification, Turnstile, rate limit, aggregation
 schema.sql            D1 tables
-scripts/              export-events.ps1, build-data.py, build-downloads.py, build-offline.py, prepare-images.py, stamp-assets.py, make-og.py
+scripts/              export-events.ps1, build-data.py, build-downloads.py, build-offline.py, prepare-images.py, stamp-assets.py, make-og.py, make-run-warning.py
 data/milestones.json  the investigation timeline text (zh-TW original)
 tests/                fixtures for every result-file version + node tests/run.mjs
 docs/DEVELOPMENT.md   developer notes (Traditional Chinese)

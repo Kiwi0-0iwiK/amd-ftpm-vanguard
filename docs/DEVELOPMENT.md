@@ -64,7 +64,7 @@ npx wrangler pages dev --port 8788
 
 網站分成兩頁（2026-11-24 起）：
 
-- **首頁 `index.html`（玩家版，`home.js`＋`i18n/home.js`）**：給沒有技術背景、被朋友傳連結過來的人。順序是：一句話＋「1 分鐘檢查」按鈕＋即時回報數 → 安全晶片是什麼、壞了會怎樣（已確認／有可能／未證實分開標）→ 為什麼你的檢查有用（即時統計＋目標 100 台的進度條）→ 三步驟檢查（下載 .bat、SmartScreen 怎麼按、拖回網頁）＋「可以放心跑」→ 白話結論＋分享（一個勾選＋人機驗證；細節、撤回收在摺疊裡）→ 我有這個問題怎麼辦 → 常見問題 → 完整調查紀錄入口。不用 vgk、事件 17 這類詞。舊網址的錨點（例如 `#story`）在首頁不存在時，就停在首頁最上面。
+- **首頁 `index.html`（玩家版，`home.js`＋`i18n/home.js`）**：給沒有技術背景、被朋友傳連結過來的人。順序是：一句話＋「1 分鐘檢查」按鈕＋即時回報數 → 安全晶片是什麼、壞了會怎樣（已確認／有可能／未證實分開標）→ 為什麼你的檢查有用（即時統計＋目標 100 台的進度條）→ 三步驟檢查（下載 .bat、「開啟檔案 - 安全性警告」按「執行」並附截圖、拖回網頁）＋「可以放心跑」→ 白話結論＋分享（一個勾選＋人機驗證；細節、撤回收在摺疊裡）→ 我有這個問題怎麼辦 → 常見問題 → 完整調查紀錄入口。不用 vgk、事件 17 這類詞。舊網址的錨點（例如 `#story`）在首頁不存在時，就停在首頁最上面。
 - **調查頁 `investigation.html`（`app.js`）**：原本的完整調查紀錄，內容不變，選單最前面多一個「← 首頁」。離線版就是這一頁。
 - 兩頁共用 `style.css`、`lib/result.js`、三個語言檔、`/api/*`。
 - **連結預覽**：兩頁都有 Open Graph／Twitter 卡片，圖是 `site/og.png`（`python scripts/make-og.py` 產生，需要 Pillow 和 Windows 的微軟正黑體）。爬蟲不跑 JavaScript，所以預覽一律是繁體中文。
@@ -101,7 +101,8 @@ wifi-8922ae-timeline/
 │   ├── build-downloads.py   從 .ps1 產生可雙擊的 .bat，算 SHA-256 → site/data/downloads.js
 │   ├── build-offline.py     把調查頁打包成單一 HTML → dist/
 │   ├── stamp-assets.py      在 site/*.html 的 .js／.css 後面加內容指紋（?v=）
-│   └── make-og.py           連結預覽圖 → site/og.png
+│   ├── make-og.py           連結預覽圖 → site/og.png
+│   └── make-run-warning.py  雙擊 .bat 時的「開啟檔案 - 安全性警告」截圖加框 → site/img/run-warning-*.webp（首頁第 2 步）
 ├── data/
 │   ├── milestones.json      調查歷程、場次註記、假設（繁中原文，改這裡）
 │   ├── sample-output.txt    檢查腳本的範例輸出（節錄）

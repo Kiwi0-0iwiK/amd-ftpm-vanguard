@@ -181,7 +181,7 @@ window.I18N = window.I18N || {};
       dlBat: 'Download .bat (double-click)',
       howBat: [
         'Your browser may warn that this type of file can be harmful; choose "Keep"',
-        'Double-click it. Windows may show a blue "Windows protected your PC" screen because the file came from the internet and is not signed: click "More info" → "Run anyway"',
+        'Double-click it. Windows shows an "Open File - Security Warning" (the publisher could not be verified) because the file came from the internet and is not signed: click "Run". On some PCs it is a blue "Windows protected your PC" screen instead: click "More info" → "Run anyway"',
         'Want to check it first? Right-click → "Edit", or open it in Notepad; it is all plain text',
         'When it finishes, the folder opens with the result file selected: drop it on "Understand your result" below',
         'If your antivirus blocks the .bat, use the .ps1 under "Advanced" below',

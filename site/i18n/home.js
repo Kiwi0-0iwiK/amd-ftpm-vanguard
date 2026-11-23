@@ -48,10 +48,11 @@
       whoHow: '不確定是不是 AMD？按 Ctrl＋Shift＋Esc 打開工作管理員 →「效能」→「CPU」，右上角會寫型號。',
       steps: [
         ['下載', '按下面的按鈕下載檢查程式（.bat 檔）。瀏覽器如果問要不要保留，選<b>保留</b>。'],
-        ['雙擊執行', '如果跳出藍色的「Windows 已保護您的電腦」，按<b>其他資訊 → 仍要執行</b>（只是因為檔案沒有付費的數位簽章）。通常幾十秒就跑完，會自動打開資料夾。'],
+        ['雙擊執行', 'Windows 會跳出「開啟檔案 - 安全性警告」（無法確認發行者），按<b>執行</b>就好（只是因為檔案沒有付費的數位簽章）。少數電腦會是藍色的「Windows 已保護您的電腦」：按<b>其他資訊 → 仍要執行</b>。通常幾十秒就跑完，會自動打開資料夾。'],
         ['拖回這個網頁', '把產生的 <code>ftpm-check-result.txt</code> 拖到下面的框框，馬上就能看到結果。'],
       ],
       dl: '下載檢查程式',
+      shotCap: '第 2 步會看到這個視窗：按「執行」。',
       safeH: '可以放心跑',
       safe: [
         '<b>只讀取</b> Windows 的事件記錄，不改任何設定、不安裝任何東西',
@@ -160,10 +161,11 @@
       whoHow: '不确定是不是 AMD？按 Ctrl＋Shift＋Esc 打开任务管理器 →“性能”→“CPU”，右上角会写型号。',
       steps: [
         ['下载', '点下面的按钮下载检查程序（.bat 文件）。浏览器如果问要不要保留，选<b>保留</b>。'],
-        ['双击运行', '如果弹出蓝色的“Windows 已保护你的电脑”，点<b>更多信息 → 仍要运行</b>（只是因为文件没有付费的数字签名）。通常几十秒就运行完，会自动打开文件夹。'],
+        ['双击运行', 'Windows 会弹出“打开文件 - 安全警告”（无法验证发布者），点<b>运行</b>就行（只是因为文件没有付费的数字签名）。少数电脑会是蓝色的“Windows 已保护你的电脑”：点<b>更多信息 → 仍要运行</b>。通常几十秒就运行完，会自动打开文件夹。'],
         ['拖回这个网页', '把生成的 <code>ftpm-check-result.txt</code> 拖到下面的框里，马上就能看到结果。'],
       ],
       dl: '下载检查程序',
+      shotCap: '第 2 步会看到这个窗口（繁体中文系统的画面）：点“运行”。',
       safeH: '可以放心运行',
       safe: [
         '<b>只读取</b> Windows 的事件日志，不改任何设置、不安装任何东西',
@@ -272,10 +274,11 @@
       whoHow: 'Not sure if you have AMD? Press Ctrl+Shift+Esc to open Task Manager → Performance → CPU; the model is shown at the top right.',
       steps: [
         ['Download', 'Download the checker (.bat file) with the button below. If your browser asks whether to keep it, choose <b>Keep</b>.'],
-        ['Double-click it', 'If a blue "Windows protected your PC" box appears, click <b>More info → Run anyway</b> (it only means the file has no paid digital signature). It usually finishes in under a minute and opens the folder for you.'],
+        ['Double-click it', 'Windows shows an "Open File - Security Warning" (the publisher could not be verified): just click <b>Run</b>. It only means the file has no paid digital signature. On some PCs it is a blue "Windows protected your PC" screen instead: click <b>More info → Run anyway</b>. It usually finishes in under a minute and opens the folder for you.'],
         ['Drop it here', 'Drag the new <code>ftpm-check-result.txt</code> into the box below to see your result right away.'],
       ],
       dl: 'Download the checker',
+      shotCap: 'This is the window you will see in step 2: click Run.',
       safeH: 'Safe to run',
       safe: [
         '<b>Read-only</b>: it reads the Windows event log, changes no settings and installs nothing',

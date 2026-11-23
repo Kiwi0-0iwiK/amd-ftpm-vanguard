@@ -680,6 +680,9 @@ table.kv tr + tr th, table.kv tr + tr td { border-top: 1px solid var(--border); 
 .h-num { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--text); color: var(--surface); }
 .h-steps strong { display: block; font-size: 16px; margin: 3px 0 4px; }
 .h-steps p { margin: 0; font-size: 14px; color: var(--text-2); line-height: 1.65; }
+.h-shot { margin: 16px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.h-shot img { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+.h-shot figcaption { color: var(--text-2); font-size: 14.5px; max-width: 280px; }
 .h-dl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 20px 0 0; }
 .h-dl .filemeta { margin: 0; }
 .h-safe { margin: 18px 0 0; max-width: 860px; }

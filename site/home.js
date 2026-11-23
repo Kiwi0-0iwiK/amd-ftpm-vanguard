@@ -86,6 +86,12 @@
     $('#h-impact').innerHTML = H.what.items.map(([lvl, t, d]) =>
       `<div class="h-card lv-${lvl}"><span class="h-badge">${esc(H.what.badges[lvl])}</span><strong>${esc(t)}</strong><p>${esc(d)}</p></div>`).join('');
     $('#h-steps').innerHTML = H.test.steps.map(([t, d], i) => `<li><span class="h-num">${i + 1}</span><div><strong>${esc(t)}</strong><p>${d}</p></div></li>`).join('');
+    // 第 2 步的警告視窗截圖：中文介面用繁中系統的截圖，英文用英文系統的
+    const shot = $('#h-shot-img');
+    const en = lang === 'en';
+    shot.src = `img/run-warning-${en ? 'en' : 'zh'}.webp`;
+    shot.height = en ? 344 : 329;
+    shot.alt = H.test.shotCap;
     $('#h-safe-list').innerHTML = H.test.safe.map((x) => `<li>${x}</li>`).join('');
     $('#h-fix').innerHTML = H.fix.items.map(([t, d]) => `<div class="h-fixitem"><strong>${esc(t)}</strong><p>${esc(d)}</p></div>`).join('');
     $('#h-faq').innerHTML = H.faq.items.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
