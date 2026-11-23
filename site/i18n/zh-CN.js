@@ -15,7 +15,7 @@ window.I18N['zh-CN'] = {
   ui: {
     brand: 'fTPM 故障调查', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
     toDark: '深色', toLight: '浅色', lang: '语言',
-    nav: { impact: '影响范围', overview: '事件总览', timing: '110 秒', ms: '毫秒顺序', story: '调查过程', hyp: '假设', test: '自己检查', stats: '大家的结果', shots: '截图', data: '数据' },
+    nav: { home: '← 首页', impact: '影响范围', overview: '事件总览', timing: '110 秒', ms: '毫秒顺序', story: '调查过程', hyp: '假设', test: '自己检查', stats: '大家的结果', shots: '截图', data: '数据' },
   },
 
   intro: {

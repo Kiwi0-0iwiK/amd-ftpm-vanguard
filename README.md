@@ -1,6 +1,6 @@
 # AMD fTPM × Vanguard
 
-**Live site: https://amd-ftpm-vanguard.pages.dev** (繁體中文 / 简体中文 / English)
+**Live site: https://amd-ftpm-vanguard.pages.dev** (繁體中文 / 简体中文 / English) · full investigation: [/investigation](https://amd-ftpm-vanguard.pages.dev/investigation)
 
 About 110 seconds after a Riot game starts and its Vanguard anti-cheat driver (`vgk`) loads, the AMD firmware TPM (fTPM) on this PC fails a command (Windows System log, TPM event 17 / 14). On the original PC, an idle on-board Wi-Fi card (Realtek RTL8922AE) went down with it every time (Code 43 until a cold boot). The Wi-Fi card is collateral damage; **the fTPM failure is the actual problem**, and on other PCs it may hit something else, or nothing visible at all.
 
@@ -40,15 +40,17 @@ On the site, a result file can be shared after the visitor reviews the exact pay
 
 ```
 site/                 static site (Cloudflare Pages)
-  index.html, app.js, style.css
-  i18n/               zh-TW (base), zh-CN, en
+  index.html, home.js player-facing home page: plain-language summary, 1-minute check, result, sharing
+  investigation.html, app.js   the full investigation (timeline, charts, screenshots); also the offline copy
+  style.css, og.png   shared styles, link-preview image
+  i18n/               zh-TW (base), zh-CN, en; home.js holds the home page text in all three
   lib/result.js       result-file parsing, share payload, verdict rule — shared by the page, the server and the tests
   downloads/          the check script (.ps1 is the source; .bat is generated)
   data/               timeline.js (investigation data), sample output, config (Turnstile site key)
 functions/api/        submit / delete / stats (Cloudflare Pages Functions)
 server/lib.js         validation, de-identification, Turnstile, rate limit, aggregation
 schema.sql            D1 tables
-scripts/              export-events.ps1, build-data.py, build-downloads.py, build-offline.py, prepare-images.py
+scripts/              export-events.ps1, build-data.py, build-downloads.py, build-offline.py, prepare-images.py, stamp-assets.py, make-og.py
 data/milestones.json  the investigation timeline text (zh-TW original)
 tests/                fixtures for every result-file version + node tests/run.mjs
 docs/DEVELOPMENT.md   developer notes (Traditional Chinese)
@@ -68,8 +70,9 @@ docs/DEVELOPMENT.md   developer notes (Traditional Chinese)
 ```powershell
 python scripts/build-downloads.py     # .bat + SHA-256 from the .ps1
 python scripts/build-data.py          # site/data/timeline.js from exported events + data/milestones.json
-python scripts/build-offline.py       # dist/ single-file offline copy
-python scripts/stamp-assets.py        # content fingerprints (?v=...) on local .js/.css in index.html, so browsers never mix a new page with cached old code
+python scripts/build-offline.py       # dist/ single-file offline copy of the investigation page
+python scripts/make-og.py             # site/og.png link-preview image (Pillow + Windows CJK fonts)
+python scripts/stamp-assets.py        # content fingerprints (?v=...) on local .js/.css in site/*.html, so browsers never mix a new page with cached old code
 node tests/run.mjs                    # run before every deploy
 
 npx wrangler d1 execute amd-ftpm-vanguard --local --file schema.sql

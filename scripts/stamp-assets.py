@@ -1,4 +1,4 @@
-"""stamp-assets.py — 在 index.html 引用的本機檔案後面加上內容指紋（?v=xxxxxxxx）
+"""stamp-assets.py — 在 site/*.html（首頁 index.html、調查頁 investigation.html）引用的本機檔案後面加上內容指紋（?v=xxxxxxxx）
 
   python scripts/stamp-assets.py
 
@@ -11,9 +11,6 @@ import re
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parent.parent / "site"
-INDEX = SITE / "index.html"
-
-html = INDEX.read_text(encoding="utf-8")
 
 
 def stamp(m):
@@ -26,7 +23,8 @@ def stamp(m):
 
 
 # 只處理本機的 .js / .css（不動 Google Fonts、下載連結、圖片）
-new = re.sub(r'(src|href)="((?:[\w\-/]+/)?[\w\-.]+\.(?:js|css))(?:\?v=[0-9a-f]+)?"', stamp, html)
-INDEX.write_text(new, encoding="utf-8")
-for m in re.finditer(r'(?:src|href)="([^"]+\?v=[0-9a-f]+)"', new):
-    print(m.group(1))
+for page in sorted(SITE.glob("*.html")):
+    html = page.read_text(encoding="utf-8")
+    new = re.sub(r'(src|href)="((?:[\w\-/]+/)?[\w\-.]+\.(?:js|css))(?:\?v=[0-9a-f]+)?"', stamp, html)
+    page.write_text(new, encoding="utf-8")
+    print(f"{page.name}: " + ", ".join(m.group(1) for m in re.finditer(r'(?:src|href)="([^"]+\?v=[0-9a-f]+)"', new)))

@@ -1,10 +1,10 @@
-"""build-offline.py — 把 site/ 打包成一個可以雙擊開啟的 HTML（不需要網路）
+"""build-offline.py — 把調查頁（site/investigation.html）打包成一個可以雙擊開啟的 HTML（不需要網路）
 
   python scripts/build-offline.py
 
 CSS、ECharts、資料、語言包、app.js 全部內嵌；截圖轉成 base64 放進 window.TIMELINE_IMAGES；
 檢查腳本（.ps1、.bat）轉成 data: URL 放進 window.TIMELINE_FILES（下載按鈕用）；
-Google Fonts 那段拿掉（改用系統字型）。
+Google Fonts 那段拿掉（改用系統字型）；回首頁的連結改成線上網站（首頁要連網才有統計和分享）。
 輸出：dist/wifi-8922ae-timeline.html
 """
 import base64
@@ -22,7 +22,8 @@ def js(path: Path) -> str:
     return path.read_text(encoding="utf-8").replace("</script", "<\\/script")
 
 
-html = (SITE / "index.html").read_text(encoding="utf-8")
+html = (SITE / "investigation.html").read_text(encoding="utf-8")
+html = html.replace('href="./"', 'href="https://amd-ftpm-vanguard.pages.dev/"')
 html = re.sub(r"\s*<!-- FONTS:BEGIN -->.*?<!-- FONTS:END -->", "", html, flags=re.S)
 html = re.sub(r'(src|href)="([^"]+?)\?v=[0-9a-f]+"', lambda m: f'{m.group(1)}="{m.group(2)}"', html)   # 拿掉 stamp-assets.py 加的指紋
 html = html.replace('<link rel="stylesheet" href="style.css">',

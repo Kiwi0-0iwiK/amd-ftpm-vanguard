@@ -88,4 +88,31 @@ test('histogram has a 300+ bucket instead of dropping long delays', () => {
   assert.ok(b.offsetBins.some(([k]) => k === 300));
 });
 
+console.log('i18n');
+{
+  // 首頁文字（i18n/home.js）三種語言的結構要一樣，少一個 key 頁面就會出現空白
+  globalThis.window = { I18N: {} };
+  const req = createRequire(import.meta.url);
+  for (const f of ['zh-TW', 'zh-CN', 'en', 'home']) req(join(root, `site/i18n/${f}.js`));
+  const shape = (o) => (Array.isArray(o) ? o.map(shape) : o && typeof o === 'object'
+    ? Object.fromEntries(Object.keys(o).sort().map((k) => [k, shape(o[k])])) : typeof o);
+  const I = globalThis.window.I18N;
+  test('home text has the same keys in every language', () => {
+    assert.deepEqual(shape(I['zh-CN'].home), shape(I['zh-TW'].home));
+    assert.deepEqual(shape(I.en.home), shape(I['zh-TW'].home));
+  });
+  test('verdict sentences exist for every verdict', () => {
+    for (const l of ['zh-TW', 'zh-CN', 'en']) for (const v of ['MATCH', 'POSSIBLE', 'NOMATCH', 'NODATA']) {
+      assert.equal(typeof I[l].home.an.res[v][1]({ f: 3, e: 4, med: 110 }), 'string');
+    }
+  });
+  test('home page keys used from the shared files exist', () => {
+    for (const l of ['zh-TW', 'zh-CN', 'en']) {
+      for (const k of ['drop', 'shortDesc', 'notAmd', 'sysH', 'vgkH', 'failedOf']) assert.ok(I[l].an[k], `${l} an.${k}`);
+      for (const k of ['send', 'delete', 'privacy', 'wdDesc', 'confirmDel', 'msg']) assert.ok(I[l].sh[k], `${l} sh.${k}`);
+      assert.ok(I[l].ui.nav.home, `${l} ui.nav.home`);
+    }
+  });
+}
+
 console.log(`\n${passed} passed`);
