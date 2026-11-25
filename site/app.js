@@ -944,9 +944,13 @@
     body.hidden = false;
     const S2 = stats;
     const pct = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : '—');
+    // 電腦數少於 MIN_PCT 時只寫「幾台中幾台」，不換算百分比（首頁 home.js 用同一個門檻）。
+    // Vanguard 版本表的分母是「場次」不是電腦數，照常顯示百分比。
+    const MIN_PCT = 10;
+    const pcsPct = (a, b) => (b >= MIN_PCT ? pct(a, b) : `${a}/${b}`);
     $('#st-tiles').innerHTML = [
       [S2.total, T.total],
-      [S2.byVerdict.MATCH, T.match(pct(S2.byVerdict.MATCH, S2.total))],
+      [S2.byVerdict.MATCH, T.match(pcsPct(S2.byVerdict.MATCH, S2.total))],
       [S2.ftpm, T.ftpm],
       [S2.medianOffset ?? '—', T.median],
     ].map(([n, l]) => `<div class="tile"><div class="num">${esc(n)}</div><div class="lbl">${esc(l)}</div></div>`).join('');
@@ -954,7 +958,7 @@
     $('#st-others').innerHTML = S2.others.length
       ? table(S2.others.map((o) => `<tr><td><code>${esc(o.key)}</code></td><td>${o.pcs}</td></tr>`), [T.colEvent, T.colPcs])
       : `<tbody><tr><td class="note">${esc(T.noOthers)}</td></tr></tbody>`;
-    const g = (arr) => arr.map((x) => `<tr><td>${esc(x.key)}</td><td>${x.n}</td><td>${x.match} (${pct(x.match, x.n)})</td><td>${x.median ?? '—'}</td></tr>`);
+    const g = (arr) => arr.map((x) => `<tr><td>${esc(x.key)}</td><td>${x.n}</td><td>${x.n >= MIN_PCT ? `${x.match} (${pct(x.match, x.n)})` : x.match}</td><td>${x.median ?? '—'}</td></tr>`);
     $('#st-tpm').innerHTML = table(g(S2.byTpm), [T.colTpm, T.colPcs, T.colMatch, T.colMedian]);
     $('#st-board').innerHTML = table(g(S2.byBoard), [T.colBoard, T.colPcs, T.colMatch, T.colMedian]);
     const vg = S2.byVgk || [];

@@ -7,6 +7,8 @@
   'use strict';
   const LANGS = ['zh-TW', 'zh-CN', 'en'];
   const GOAL = 100;
+  // 回報的電腦少於這個數字時不顯示百分比：「2 台裡 2 台」寫成「100%」會讓人以為很確定（調查頁 app.js 用同一個門檻）
+  const MIN_PCT = 10;
   const HOME_IDS = ['hero', 'top', 'what', 'why', 'test', 'analyze', 'fix', 'faq', 'more'];
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -116,10 +118,10 @@
     live.hidden = total === null;
     if (total !== null) live.innerHTML = total ? H.live.n(total, match) : esc(H.live.none);
     const T = H.why.tiles;
-    const pct = total ? `${Math.round((match / total) * 100)}%` : '—';
+    const pct = total >= MIN_PCT ? ` · ${Math.round((match / total) * 100)}%` : '';
     $('#h-tiles').innerHTML = [
       [total ?? '—', T.total],
-      [total ? `${match}<small>/ ${total}</small>` : '—', `${T.match}${total ? ` · ${pct}` : ''}`],
+      [total ? `${match}<small>/ ${total}</small>` : '—', `${T.match}${pct}`],
       [(stats && stats.medianOffset) ?? '—', T.median],
     ].map(([n, l]) => `<div class="tile"><div class="num">${n}</div><div class="lbl">${esc(l)}</div></div>`).join('');
     $('#h-goal').hidden = total === null;

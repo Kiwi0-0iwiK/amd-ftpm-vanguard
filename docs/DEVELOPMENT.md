@@ -180,7 +180,9 @@ npx wrangler pages project create amd-ftpm-vanguard --production-branch main --f
 - 圖表時間一律是台北時間：資料存成「台北牆上時間當 UTC」的毫秒數，ECharts 開 `useUTC`，在任何時區打開都一樣。
 - 事件記錄的時間精度是 100 奈秒；`build-data.py` 的 `us()` 自己解析小數，因為 Python 的 `fromisoformat` 只到微秒。
 - 場次的 WiFi 狀態是從 WLAN 記錄推出來的；停用裝置這種記錄裡看不出來的實驗條件，寫在 `data/milestones.json` 的 `sessionNotes`。
-- grid 子元素要加 `min-width: 0`，否則一行很長的指令會把整頁撐出橫向捲軸。
+- grid 子元素要加 `min-width: 0`（或欄位寫 `minmax(0, 1fr)`），否則一行很長的指令或不換行的表格會把整頁撐出橫向捲軸。
+- 橘色分兩個：圖表與線條用 `--c-tpm`，**文字**用 `--c-tpm-text`（淺色模式 `#eb6834` 當文字對比只有 2.9:1）。淺色的 `--text-3` 也調深到 `#67665f`，小字才過 4.5:1。
+- 統計的百分比：電腦數少於 10 台（`home.js`、`app.js` 的 `MIN_PCT`）只顯示「幾台中幾台」，不換算百分比；Vanguard 版本表的分母是場次，照常顯示。
 - SVG 元素不要用含 `transform` 的 CSS 動畫：CSS 的 transform 會蓋掉 SVG 的 `transform="translate(…)"` 屬性，元素全部擠到原點。只動 opacity。
 - 站內錨點跳轉要「捲完再對齊一次」：延遲載入的縮圖會在捲動途中把版面往下推。
 - .bat 是 cmd／PowerShell 雙語檔（開頭 `<# :` 那段），必須存成沒有 BOM 的 UTF-8、CRLF 換行；已在中文路徑下測過。

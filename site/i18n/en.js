@@ -236,7 +236,7 @@ window.I18N = window.I18N || {};
     },
     st: {
       h: 'Everyone\'s results',
-      desc: 'Totals of check results other players shared anonymously. Only aggregates are shown, never data for a single PC.',
+      desc: 'Totals of check results other players shared anonymously. Only aggregates are shown, never data for a single PC. The numbers come from players who chose to share and cannot be verified one by one; below 10 PCs, counts are shown instead of percentages.',
       loading: 'Loading…', empty: 'No one has shared a result yet.', error: 'Statistics are unavailable right now; please try again later.', offline: 'The offline copy cannot show everyone\'s results. Please use https://amd-ftpm-vanguard.pages.dev',
       beFirst: 'Share my result',
       total: 'PCs shared', match: (p) => `Match (TPM keeps failing after load) · ${p}`, ftpm: 'Using AMD fTPM', median: 'Median time to failure (s)',

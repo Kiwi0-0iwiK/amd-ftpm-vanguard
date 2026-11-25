@@ -5,13 +5,13 @@
 
   I['zh-TW'].home = {
     title: 'AMD 電腦玩 Riot 遊戲，安全晶片可能正在出錯',
-    description: '用 AMD 處理器玩特戰英豪等 Riot 遊戲？反作弊啟動一百多秒後，CPU 內建的安全晶片（fTPM）可能會出錯，而且多數人不會發現。1 分鐘檢查你的電腦，匿名分享結果，讓 AMD 和 Riot 更快修好。',
+    description: '用 AMD 處理器玩特戰英豪等 Riot 遊戲？反作弊啟動一百多秒後，CPU 內建的安全晶片（fTPM）可能會出錯，而且出錯時不會有任何通知。1 分鐘檢查你的電腦，匿名分享結果，讓 AMD 和 Riot 更快修好。',
     brand: 'AMD 安全晶片檢查',
     nav: { what: '會怎樣', why: '為什麼要檢查', test: '1 分鐘檢查', fix: '怎麼辦', faq: '常見問題', more: '完整調查紀錄' },
     hero: {
       kicker: 'AMD 處理器 ＋ Riot 遊戲的玩家',
       title: '玩特戰英豪時，<br>你電腦裡的<span class="hl">安全晶片</span>可能正在出錯',
-      sub: 'Riot 的反作弊 Vanguard 啟動一百多秒後，AMD 處理器內建的安全晶片（fTPM）會出錯一次。大部分人完全不會發現，但它可能拖垮別的東西：在我的電腦上，是 WiFi 直接消失，只有重開機才回得來。',
+      sub: 'Riot 的反作弊 Vanguard 啟動一百多秒後，AMD 處理器內建的安全晶片（fTPM）可能會出錯。出錯時不會跳任何通知，很容易沒發現，但它可能拖垮別的東西：在我的電腦上，是 WiFi 直接消失，只有重開機才回得來。',
       flow: ['打開 Riot 遊戲', '約 2 分鐘後', '安全晶片出錯', '其他東西可能跟著壞'],
       cta: '1 分鐘檢查我的電腦',
       cta2: '已經跑完了？看結果 ↓',
@@ -32,14 +32,14 @@
         ['maybe', 'BitLocker 硬碟加密', '有開硬碟加密的電腦，安全晶片異常時，開機可能會要你輸入一長串修復金鑰。'],
         ['rumor', 'USB 鍵盤、滑鼠失靈', '網路上有人說開遊戲後鍵盤滑鼠會失效，但還查不到跟安全晶片有關的證據。'],
       ],
-      silent: '<b>最麻煩的是：大部分電腦沒有任何症狀。</b>晶片出錯不會跳通知，只會默默記在 Windows 的事件記錄裡。就算你覺得電腦好好的，也值得檢查一次。',
+      silent: '<b>最麻煩的是：出錯不一定有症狀。</b>晶片出錯不會跳通知，只會默默記在 Windows 的事件記錄裡。就算你覺得電腦好好的，也值得檢查一次。',
     },
     why: {
       h: '為什麼你的檢查很重要',
       p: '我把調查結果交給 Riot 客服，第一次得到的回覆是「換網卡驅動試試」。一台電腦的回報很容易被當成個案；如果有幾十、上百台 AMD 電腦都出現同樣的錯誤，就很難被忽略，AMD 和 Riot 也比較容易找到原因、更快修好。',
       tiles: { total: '回報的電腦', match: '有同樣問題', median: '反作弊啟動後第幾秒出錯（中位數）' },
       goal: (n, g) => `目標：收集 ${g} 台電腦的結果，整理成報告交給 AMD 和 Riot（目前 ${n} 台）`,
-      note: '網站只公開加總後的數字，不會顯示任何一台電腦的資料。',
+      note: '網站只公開加總後的數字，不會顯示任何一台電腦的資料。數字來自玩家自願分享，沒辦法逐台驗證；回報少於 10 台時不顯示百分比。',
       more: '看詳細統計',
     },
     test: {
@@ -56,7 +56,7 @@
       safeH: '可以放心跑',
       safe: [
         '<b>只讀取</b> Windows 的事件記錄，不改任何設定、不安裝任何東西',
-        '<b>不碰遊戲、也不碰反作弊</b>，遊戲開著或關著都可以跑，不用擔心封號',
+        '<b>不碰遊戲、也不碰反作弊</b>，遊戲開著或關著都可以跑',
         '不需要系統管理員權限',
         '<b>不會自動上傳</b>：要不要分享，由你在網頁上決定',
         '內容是純文字，可以先用記事本打開看',
@@ -99,8 +99,8 @@
     faq: {
       h: '常見問題',
       items: [
-        ['會被封號嗎？', '不會碰到遊戲或反作弊。檢查程式只讀 Windows 本來就有的事件記錄，跟你自己打開「事件檢視器」看是一樣的。'],
-        ['我沒有任何症狀，還需要跑嗎？', '需要。大部分電腦都沒有明顯症狀，出錯只會記在事件記錄裡。不管有沒有問題，你的結果都能讓統計更準。'],
+        ['會被封號嗎？', '檢查程式不碰遊戲或反作弊，只讀 Windows 本來就有的事件記錄，跟你自己打開「事件檢視器」看是一樣的，我想不到它會被當成作弊的理由。不過我不是 Riot，沒辦法替他們保證。'],
+        ['我沒有任何症狀，還需要跑嗎？', '需要。出錯不一定有明顯症狀，只會記在事件記錄裡。不管有沒有問題，你的結果都能讓統計更準。'],
         ['要多久？需要什麼？', '下載、雙擊，通常幾十秒就跑完。不需要系統管理員權限，也不用安裝任何東西。它看的是最近 30 天的紀錄，所以最近有玩過 Riot 遊戲才看得出來。'],
         ['我是 Intel 電腦呢？', '不用跑。Intel 用的是另一種安全晶片（PTT），這個問題目前只在 AMD 上發現。'],
         ['英雄聯盟也會嗎？', '英雄聯盟、聯盟戰棋、2XKO 用的是同一套 Vanguard，理論上一樣，但我還沒實際測過。檢查程式不分遊戲，你跑一次就能幫忙確認。'],
@@ -118,13 +118,13 @@
 
   I['zh-CN'].home = {
     title: '用 AMD 电脑玩 Riot 游戏，安全芯片可能正在出错',
-    description: '用 AMD 处理器玩无畏契约等 Riot 游戏？反作弊启动一百多秒后，CPU 内置的安全芯片（fTPM）可能会出错，而且多数人不会发现。1 分钟检查你的电脑，匿名分享结果，让 AMD 和 Riot 更快修好。',
+    description: '用 AMD 处理器玩无畏契约等 Riot 游戏？反作弊启动一百多秒后，CPU 内置的安全芯片（fTPM）可能会出错，而且出错时不会有任何通知。1 分钟检查你的电脑，匿名分享结果，让 AMD 和 Riot 更快修好。',
     brand: 'AMD 安全芯片检查',
     nav: { what: '会怎样', why: '为什么要检查', test: '1 分钟检查', fix: '怎么办', faq: '常见问题', more: '完整调查记录' },
     hero: {
       kicker: 'AMD 处理器 ＋ Riot 游戏的玩家',
       title: '玩无畏契约时，<br>你电脑里的<span class="hl">安全芯片</span>可能正在出错',
-      sub: 'Riot 的反作弊 Vanguard 启动一百多秒后，AMD 处理器内置的安全芯片（fTPM）会出错一次。大部分人完全不会发现，但它可能拖垮别的东西：在我的电脑上，是 WiFi 直接消失，只有重启才能恢复。',
+      sub: 'Riot 的反作弊 Vanguard 启动一百多秒后，AMD 处理器内置的安全芯片（fTPM）可能会出错。出错时不会弹任何通知，很容易没发现，但它可能拖垮别的东西：在我的电脑上，是 WiFi 直接消失，只有重启才能恢复。',
       flow: ['打开 Riot 游戏', '约 2 分钟后', '安全芯片出错', '其他东西可能跟着坏'],
       cta: '1 分钟检查我的电脑',
       cta2: '已经运行完了？看结果 ↓',
@@ -145,14 +145,14 @@
         ['maybe', 'BitLocker 硬盘加密', '开了硬盘加密的电脑，安全芯片异常时，开机可能要求你输入一长串恢复密钥。'],
         ['rumor', 'USB 键盘、鼠标失灵', '网上有人说开游戏后键盘鼠标会失灵，但还查不到和安全芯片有关的证据。'],
       ],
-      silent: '<b>最麻烦的是：大部分电脑没有任何症状。</b>芯片出错不会弹通知，只会默默记在 Windows 的事件日志里。就算你觉得电脑好好的，也值得检查一次。',
+      silent: '<b>最麻烦的是：出错不一定有症状。</b>芯片出错不会弹通知，只会默默记在 Windows 的事件日志里。就算你觉得电脑好好的，也值得检查一次。',
     },
     why: {
       h: '为什么你的检查很重要',
       p: '我把调查结果交给 Riot 客服，第一次得到的回复是“换网卡驱动试试”。一台电脑的反馈很容易被当成个例；如果有几十、上百台 AMD 电脑都出现同样的错误，就很难被忽视，AMD 和 Riot 也更容易找到原因、更快修好。',
       tiles: { total: '提交结果的电脑', match: '有同样问题', median: '反作弊启动后第几秒出错（中位数）' },
       goal: (n, g) => `目标：收集 ${g} 台电脑的结果，整理成报告交给 AMD 和 Riot（目前 ${n} 台）`,
-      note: '网站只公开汇总后的数字，不会显示任何一台电脑的数据。',
+      note: '网站只公开汇总后的数字，不会显示任何一台电脑的数据。数字来自玩家自愿分享，无法逐台验证；提交少于 10 台时不显示百分比。',
       more: '看详细统计',
     },
     test: {
@@ -169,7 +169,7 @@
       safeH: '可以放心运行',
       safe: [
         '<b>只读取</b> Windows 的事件日志，不改任何设置、不安装任何东西',
-        '<b>不碰游戏、也不碰反作弊</b>，游戏开着或关着都可以运行，不用担心封号',
+        '<b>不碰游戏、也不碰反作弊</b>，游戏开着或关着都可以运行',
         '不需要管理员权限',
         '<b>不会自动上传</b>：要不要分享，由你在网页上决定',
         '内容是纯文本，可以先用记事本打开看',
@@ -212,8 +212,8 @@
     faq: {
       h: '常见问题',
       items: [
-        ['会被封号吗？', '不会碰到游戏或反作弊。检查程序只读 Windows 本来就有的事件日志，跟你自己打开“事件查看器”看是一样的。'],
-        ['我没有任何症状，还需要运行吗？', '需要。大部分电脑都没有明显症状，出错只会记在事件日志里。不管有没有问题，你的结果都能让统计更准确。'],
+        ['会被封号吗？', '检查程序不碰游戏或反作弊，只读 Windows 本来就有的事件日志，跟你自己打开“事件查看器”看是一样的，我想不到它会被当成作弊的理由。不过我不是 Riot，没办法替他们保证。'],
+        ['我没有任何症状，还需要运行吗？', '需要。出错不一定有明显症状，只会记在事件日志里。不管有没有问题，你的结果都能让统计更准确。'],
         ['要多久？需要什么？', '下载、双击，通常几十秒就运行完。不需要管理员权限，也不用安装任何东西。它看的是最近 30 天的记录，所以最近玩过 Riot 游戏才看得出来。'],
         ['我是 Intel 电脑呢？', '不用运行。Intel 用的是另一种安全芯片（PTT），这个问题目前只在 AMD 上发现。'],
         ['英雄联盟也会吗？', '英雄联盟、云顶之弈、2XKO 用的是同一套 Vanguard，理论上一样，但我还没实际测试过。检查程序不分游戏，你运行一次就能帮忙确认。'],
@@ -231,13 +231,13 @@
 
   I.en.home = {
     title: 'AMD PC + Riot games: your security chip may be failing',
-    description: 'Playing VALORANT or another Riot game on an AMD PC? About two minutes after the anti-cheat starts, the security chip built into the CPU (fTPM) can fail, and most people never notice. Check your PC in a minute and share the result anonymously to help get it fixed.',
+    description: 'Playing VALORANT or another Riot game on an AMD PC? About two minutes after the anti-cheat starts, the security chip built into the CPU (fTPM) can fail, and it gives no warning when it does. Check your PC in a minute and share the result anonymously to help get it fixed.',
     brand: 'AMD security chip check',
     nav: { what: 'What happens', why: 'Why check', test: 'Check in 1 min', fix: 'What to do', faq: 'FAQ', more: 'Full investigation' },
     hero: {
       kicker: 'For players with an AMD CPU and a Riot game',
       title: 'Playing VALORANT? The <span class="hl">security chip</span> in your PC may be failing',
-      sub: 'About two minutes after Riot\'s anti-cheat (Vanguard) starts, the security chip built into AMD CPUs (fTPM) fails once. Most people never notice, but it can take something else down with it. On my PC, the Wi-Fi card simply disappeared until the next reboot.',
+      sub: 'About two minutes after Riot\'s anti-cheat (Vanguard) starts, the security chip built into AMD CPUs (fTPM) can fail. There is no warning when it does, so it is easy to miss, but it can take something else down with it. On my PC, the Wi-Fi card simply disappeared until the next reboot.',
       flow: ['Start a Riot game', '~2 minutes later', 'Security chip fails', 'Other things may break'],
       cta: 'Check my PC in 1 minute',
       cta2: 'Already ran it? See your result ↓',
@@ -258,14 +258,14 @@
         ['maybe', 'BitLocker disk encryption', 'On PCs with disk encryption, a misbehaving chip can make Windows ask for the long recovery key at boot.'],
         ['rumor', 'USB keyboard and mouse stop working', 'Some players report their keyboard and mouse dying after starting a game, but nothing so far links it to the security chip.'],
       ],
-      silent: '<b>The tricky part: most PCs show no symptoms at all.</b> The failure triggers no notification; it is only written quietly to the Windows event log. Even if your PC seems fine, it is worth checking once.',
+      silent: '<b>The tricky part: a failure does not always cause symptoms.</b> The failure triggers no notification; it is only written quietly to the Windows event log. Even if your PC seems fine, it is worth checking once.',
     },
     why: {
       h: 'Why your check matters',
       p: 'When I sent my findings to Riot support, the first answer was "try a different network driver". A report from one PC is easy to dismiss as a one-off. If dozens or hundreds of AMD PCs show the same failure, it is hard to ignore, and it helps AMD and Riot find the cause and fix it sooner.',
       tiles: { total: 'PCs shared', match: 'Same problem', median: 'Seconds after anti-cheat start (median)' },
       goal: (n, g) => `Goal: ${g} PCs, compiled into a report for AMD and Riot (now ${n})`,
-      note: 'Only totals are public. No individual PC is ever shown.',
+      note: 'Only totals are public. No individual PC is ever shown. The numbers come from players who chose to share and cannot be verified one by one; percentages are hidden until at least 10 PCs have shared.',
       more: 'Detailed statistics',
     },
     test: {
@@ -282,7 +282,7 @@
       safeH: 'Safe to run',
       safe: [
         '<b>Read-only</b>: it reads the Windows event log, changes no settings and installs nothing',
-        '<b>Does not touch the game or the anti-cheat</b>; run it with the game open or closed, no ban risk',
+        '<b>Does not touch the game or the anti-cheat</b>; run it with the game open or closed',
         'No administrator rights needed',
         '<b>Nothing is uploaded automatically</b>; sharing is your choice on this page',
         'It is plain text: open it in Notepad first if you like',
@@ -325,8 +325,8 @@
     faq: {
       h: 'FAQ',
       items: [
-        ['Can I get banned?', 'It never touches the game or the anti-cheat. The checker only reads the event log Windows already keeps, the same thing you would see in Event Viewer.'],
-        ['I have no symptoms. Should I still run it?', 'Yes. Most PCs show no obvious symptoms; the failure only shows up in the event log. Whether or not you have the problem, your result makes the statistics more accurate.'],
+        ['Can I get banned?', 'The checker never touches the game or the anti-cheat. It only reads the event log Windows already keeps, the same thing you would see in Event Viewer, so I know of no reason it would be treated as cheating. I am not Riot, though, and cannot guarantee it for them.'],
+        ['I have no symptoms. Should I still run it?', 'Yes. A failure does not always cause obvious symptoms; it only shows up in the event log. Whether or not you have the problem, your result makes the statistics more accurate.'],
         ['How long does it take? What do I need?', 'Download and double-click; it usually finishes in under a minute. No administrator rights, nothing to install. It looks at the last 30 days, so you need to have played a Riot game recently.'],
         ['What about Intel PCs?', 'No need. Intel uses a different security chip (PTT), and this problem has only been found on AMD.'],
         ['Does League of Legends do this too?', 'League of Legends, TFT and 2XKO use the same Vanguard, so it should behave the same, but I have not tested it. The checker works for any Riot game; running it helps confirm.'],
