@@ -26,5 +26,6 @@ def stamp(m):
 for page in sorted(SITE.glob("*.html")):
     html = page.read_text(encoding="utf-8")
     new = re.sub(r'(src|href)="((?:[\w\-/]+/)?[\w\-.]+\.(?:js|css))(?:\?v=[0-9a-f]+)?"', stamp, html)
-    page.write_text(new, encoding="utf-8")
+    if new != html:   # 沒變就不寫；寫的時候固定用 LF（.gitattributes），Windows 上 write_text 預設會寫成 CRLF
+        page.write_text(new, encoding="utf-8", newline="\n")
     print(f"{page.name}: " + ", ".join(m.group(1) for m in re.finditer(r'(?:src|href)="([^"]+\?v=[0-9a-f]+)"', new)))
