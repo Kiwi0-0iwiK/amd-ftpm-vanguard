@@ -796,7 +796,8 @@
     r.readAsText(f, 'utf-8');
   };
   function showErr(k) { const el = $('#an-err'); el.hidden = !k; el.textContent = k ? L.an.err[k] : ''; }
-  fileIn.addEventListener('change', () => readFile(fileIn.files[0]));
+  // 讀完把選擇清掉：重新跑腳本後再選同一個檔名，change 事件才會再觸發
+  fileIn.addEventListener('change', () => { readFile(fileIn.files[0]); fileIn.value = ''; });
   drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileIn.click(); } });
   ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
   ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
@@ -807,10 +808,9 @@
     const A = L.an;
     const d = mine;
     const fails = d.sessions.filter((s) => typeof s.off === 'number');
-    const offs = fails.map((s) => s.off).sort((a, b) => a - b);
-    const med = offs.length ? offs[Math.floor(offs.length / 2)] : null;
-    // 結果檔可以被手改：verdict 只接受已知的四種（parseResult 已經整理過，這裡再擋一次），其他一律當 NODATA
-    const verdict = window.FTPM.VERDICTS.includes(d.verdict) ? d.verdict : 'NODATA';
+    const med = window.FTPM.medianOf(fails.map((s) => s.off));   // 和結果檔裡腳本印的中位數一致
+    // 判定用目前的規則重算（和統計一致），不用檔案裡寫的 verdict：舊版腳本規則不同，檔案也可能被手改
+    const verdict = window.FTPM.verdictOf(d);
     const vcls = { MATCH: 'match', POSSIBLE: 'possible', NOMATCH: 'nomatch', NODATA: 'nodata' }[verdict];
     const vtxt = (L.test.results[{ MATCH: 0, POSSIBLE: 1, NOMATCH: 2, NODATA: 3 }[verdict]] || [])[1] || verdict;
     $('#an-head').innerHTML = `<div class="r ${vcls} an-verdict"><code>${verdict}</code><strong>${esc(vtxt)}</strong></div>` +
@@ -922,7 +922,7 @@
       const d = await post('delete', { token: tsToken, id: mine.id });
       shMsg(d.deleted ? 'deleted' : 'notFound');
       loadStats(true);
-    } catch (e) { shMsg(L.sh.msg[e.message] ? e.message : 'fail', ` (${e.message})`); }
+    } catch (e) { shMsg(L.sh.msg[e.message] ? e.message : 'fail', L.sh.msg[e.message] ? '' : ` (${e.message})`); }
     resetTs();
   });
 

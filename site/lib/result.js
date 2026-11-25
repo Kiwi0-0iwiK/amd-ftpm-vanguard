@@ -3,6 +3,8 @@
  * - parseResult(text)      結果檔文字 → 物件（v1、v2 都接受）
  * - buildShare(d, lang)    結果 → 匿名分享內容（拿掉每場的時間，只留秒數與計數）
  * - deriveVerdict(facts)   用目前的規則重新判定；伺服器不相信檔案裡寫的結論
+ * - verdictOf(d)           結果檔 → 用目前規則重算的判定（網頁顯示用，和統計一致）
+ * - medianOf(offsets)      「你的結果」的中位數，和檢查腳本印的一樣
  *
  * 版本：
  * - 格式版本 v（結果檔 JSON 結構）：1 = 2026-11-19 第一版，2 = 2026-11-21（不預設秒數、記 eligible 與實際場次長度）
@@ -54,6 +56,13 @@
     return 'NODATA';
   }
 
+  // 出錯秒數的中位數：和檢查腳本（.ps1）一樣，偶數個時取「中間偏小」那個，網頁上顯示的才會和結果檔裡寫的一致。
+  // （伺服器統計跨電腦算，用的是中間兩個的平均，見 server/lib.js）
+  function medianOf(offsets) {
+    const a = (offsets || []).filter((x) => typeof x === 'number').sort((x, y) => x - y);
+    return a.length ? a[Math.floor((a.length - 1) / 2)] : null;
+  }
+
   // 依 Vanguard 版本：能判斷的場次（有出錯，或開了 10 分鐘以上）、出錯場次、出錯秒數。只有版本，沒有遊玩時間
   function byVgk(sessions) {
     const m = {};
@@ -84,7 +93,11 @@
     };
   }
 
-  const api = { RULE, FORMATS, VERDICTS, parseResult, buildShare, deriveVerdict, byVgk };
+  // 網頁上顯示的判定：用目前的規則重算（和伺服器統計一致），不直接相信檔案裡寫的 verdict
+  // （舊版腳本的判定規則不同；檔案也可能被改過）
+  const verdictOf = (d) => deriveVerdict(buildShare(d));
+
+  const api = { RULE, FORMATS, VERDICTS, parseResult, buildShare, deriveVerdict, verdictOf, byVgk, medianOf };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.FTPM = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

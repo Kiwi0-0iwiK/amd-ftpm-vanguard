@@ -65,6 +65,15 @@ test('share groups sessions by Vanguard build (2026.11.22+)', () => {
   assert.equal(sum('eligible'), fixture('v2-vgk.txt').eligible);
 });
 test('older result files share an empty Vanguard breakdown', () => assert.deepEqual(FTPM.buildShare(fixture('v2.txt')).vgk, {}));
+test('page verdict uses the current rule, not the one written in the file', () => {
+  assert.equal(FTPM.verdictOf(fixture('v2-claims-match.txt')), 'POSSIBLE');
+  assert.equal(FTPM.verdictOf(fixture('v2.txt')), 'MATCH');
+});
+test('page median matches the script (lower middle for an even count)', () => {
+  assert.equal(FTPM.medianOf([125, 105, 118, 111]), 111);
+  assert.equal(FTPM.medianOf([120, 110, 130]), 120);
+  assert.equal(FTPM.medianOf([]), null);
+});
 test('short sessions without a failure are not counted for a build', () => {
   const g = FTPM.byVgk([{ vgk: 'X', off: null, dur: 30 }, { vgk: 'X', off: null, dur: 900 }, { vgk: 'X', off: 110, dur: 200 }]);
   assert.deepEqual(g.X, { eligible: 2, failed: 1, offsets: [110] });
@@ -146,6 +155,8 @@ console.log('i18n');
   });
   test('home page keys used from the shared files exist', () => {
     for (const l of ['zh-TW', 'zh-CN', 'en']) {
+      assert.equal(typeof I[l].home.an.named('x', 'y'), 'string', `${l} home.an.named`);
+      assert.equal(typeof I[l].home.an.sep, 'string', `${l} home.an.sep`);
       for (const k of ['drop', 'shortDesc', 'notAmd', 'sysH', 'vgkH', 'failedOf']) assert.ok(I[l].an[k], `${l} an.${k}`);
       for (const k of ['send', 'delete', 'privacy', 'wdDesc', 'confirmDel', 'msg']) assert.ok(I[l].sh[k], `${l} sh.${k}`);
       assert.ok(I[l].ui.nav.home, `${l} ui.nav.home`);

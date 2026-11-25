@@ -19,7 +19,9 @@
   };
 
   // 以前首頁就是調查頁；舊連結的錨點（#story 之類）在這頁不存在時，直接停在首頁最上面
-  if (location.hash && !HOME_IDS.includes(decodeURIComponent(location.hash.slice(1)))) {
+  // （decodeURIComponent 遇到壞掉的 %xx 會丟錯；整頁的文字都是這支程式填的，不能讓它中斷）
+  const hashId = (() => { try { return decodeURIComponent(location.hash.slice(1)); } catch { return ''; } })();
+  if (location.hash && !HOME_IDS.includes(hashId)) {
     history.replaceState(null, '', location.pathname + location.search);
     scrollTo(0, 0);
   }
@@ -156,7 +158,8 @@
   function showErr(k) { const el = $('#an-err'); el.hidden = !k; el.textContent = k ? L.an.err[k] : ''; }
   const drop = $('#drop');
   const fileIn = $('#file-in');
-  fileIn.addEventListener('change', () => readFile(fileIn.files[0]));
+  // 讀完把選擇清掉：重新跑腳本後再選同一個檔名，change 事件才會再觸發
+  fileIn.addEventListener('change', () => { readFile(fileIn.files[0]); fileIn.value = ''; });
   drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileIn.click(); } });
   ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
   ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
@@ -166,7 +169,7 @@
   const friendly = (key) => {
     const k = String(key).toLowerCase();
     const hit = Object.keys(H.an.known).find((p) => k.startsWith(p));
-    return hit ? `${H.an.known[hit]}（${key}）` : key;
+    return hit ? H.an.named(H.an.known[hit], key) : key;
   };
 
   function renderMine() {
@@ -174,10 +177,11 @@
     const d = mine;
     const A = L.an;
     const fails = d.sessions.filter((s) => typeof s.off === 'number');
-    const offs = fails.map((s) => s.off).sort((a, b) => a - b);
-    const med = offs.length ? Math.round(offs[Math.floor(offs.length / 2)]) : null;
+    const md = window.FTPM.medianOf(fails.map((s) => s.off));   // 和結果檔裡腳本印的中位數一致
+    const med = md === null ? null : Math.round(md);
     const e = Number.isInteger(d.eligible) ? d.eligible : d.sessions.length;
-    const v = ['MATCH', 'POSSIBLE', 'NOMATCH', 'NODATA'].includes(d.verdict) ? d.verdict : 'NODATA';
+    // 用目前的規則重算，和分享後統計裡算的一樣（不直接用檔案裡寫的 verdict）
+    const v = window.FTPM.verdictOf(d);
     const [title, body] = H.an.res[v];
     $('#h-verdict').className = `h-verdict v-${v.toLowerCase()}`;
     $('#h-verdict').innerHTML = `<code>${v}</code><strong>${esc(title)}</strong><p>${esc(body({ f: fails.length, e, med, loads: d.loads }))}</p>`;
@@ -187,7 +191,7 @@
     const oRows = Object.entries(others).sort((a, b) => b[1] - a[1]);
     const shortN = d.sessions.filter((s) => s.off === null && typeof s.dur === 'number' && s.dur < 10).length;
     $('#h-extra').innerHTML =
-      (oRows.length ? `<p class="h-others"><b>${esc(H.an.others)}</b> ${oRows.map(([k, n]) => `${esc(friendly(k))} × ${n}`).join('、')}</p>` : '') +
+      (oRows.length ? `<p class="h-others"><b>${esc(H.an.others)}</b> ${oRows.map(([k, n]) => `${esc(friendly(k))} × ${n}`).join(esc(H.an.sep))}</p>` : '') +
       (shortN ? `<p class="small">${esc(A.shortDesc(shortN))}</p>` : '') +
       (!d.amd ? `<p class="an-warn">${esc(A.notAmd)}</p>` : '');
 
@@ -259,7 +263,7 @@
       const d = await post('delete', { token: tsToken, id: mine.id });
       shMsg(d.deleted ? 'deleted' : 'notFound');
       loadStats(true);
-    } catch (e) { shMsg(L.sh.msg[e.message] ? e.message : 'fail', ` (${e.message})`); }
+    } catch (e) { shMsg(L.sh.msg[e.message] ? e.message : 'fail', L.sh.msg[e.message] ? '' : ` (${e.message})`); }
     resetTs();
   });
 
