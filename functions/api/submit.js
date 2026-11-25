@@ -1,14 +1,13 @@
 // POST /api/submit  { token, payload }  → 存一筆匿名結果（同一個 id 覆蓋）
-import { json, normalize, verifyTurnstile, rateLimit, bumpStats } from '../../server/lib.js';
+import { json, normalize, verifyTurnstile, rateLimit, bumpStats, readJson } from '../../server/lib.js';
 
 export async function onRequestPost({ request, env }) {
   if (!env.DB) return json({ error: 'no_db' }, 503);
   const ip = request.headers.get('CF-Connecting-IP') || '';
   let body;
-  try {
-    if (Number(request.headers.get('content-length') || 0) > 32768) return json({ error: 'too_large' }, 413);
-    body = await request.json();
-  } catch { return json({ error: 'bad_json' }, 400); }
+  try { body = await readJson(request, 32768); } catch (e) {
+    return e.message === 'too_large' ? json({ error: 'too_large' }, 413) : json({ error: 'bad_json' }, 400);
+  }
 
   const ts = await verifyTurnstile(env, body?.token, ip);
   if (!ts.ok) return json({ error: ts.error }, ts.error === 'not_configured' ? 503 : 403);

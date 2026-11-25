@@ -65,6 +65,8 @@ export function normalize(p) {
   };
   if (rec.loads === null || rec.sessions === null || rec.failed === null) throw new Error('bad_counts');
   if (rec.failed > rec.sessions || offsets.length > rec.sessions) throw new Error('inconsistent');
+  // 能判斷的場次一定包含所有出錯的場次；eligible 比 failed 少會讓「出錯比例」超過 100%
+  if (rec.eligible !== null && rec.failed > rec.eligible) throw new Error('inconsistent');
   rec.verdict = deriveVerdict(rec);
   rec.rule = RULE;
   return rec;
@@ -82,15 +84,39 @@ export async function verifyTurnstile(env, token, ip) {
   return d.success ? { ok: true } : { ok: false, error: 'turnstile_failed' };
 }
 
+// 讀 JSON 請求本文，最多 max 位元組。只看 content-length 不夠：分塊傳送（chunked）的請求沒有這個標頭，
+// 所以邊讀邊數，超過就停，不會把整個大檔案讀進記憶體。錯誤：too_large、bad_json
+export async function readJson(request, max = 32768) {
+  if (Number(request.headers.get('content-length') || 0) > max) throw new Error('too_large');
+  if (!request.body) throw new Error('bad_json');
+  const reader = request.body.getReader();
+  const chunks = [];
+  let n = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    n += value.byteLength;
+    if (n > max) { await reader.cancel().catch(() => {}); throw new Error('too_large'); }
+    chunks.push(value);
+  }
+  const buf = new Uint8Array(n);
+  let o = 0;
+  for (const c of chunks) { buf.set(c, o); o += c.byteLength; }
+  try { return JSON.parse(new TextDecoder().decode(buf)); } catch { throw new Error('bad_json'); }
+}
+
 async function sha256hex(s) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-// 同一個來源每天最多 limit 次寫入；IP 只存「日期＋IP＋固定字串」的雜湊
+// 同一個來源每天最多 limit 次寫入；IP 只存「日期＋IP＋祕密鹽」的雜湊。
+// 鹽一定要是祕密：原始碼是公開的，只用固定字串的話，把所有 IPv4 試一遍就能從雜湊反推出 IP。
+// 用祕密 RL_SALT；還沒設定時才借用一定會設定的 TURNSTILE_SECRET。
 export async function rateLimit(env, ip, limit = 30) {
   const day = new Date().toISOString().slice(0, 10);
-  const iph = (await sha256hex(`${day}|${ip || 'none'}|amd-ftpm-vanguard-rl`)).slice(0, 24);
+  const salt = env.RL_SALT || env.TURNSTILE_SECRET || '';
+  const iph = (await sha256hex(`${day}|${ip || 'none'}|${salt}|amd-ftpm-vanguard-rl`)).slice(0, 24);
   const row = await env.DB.prepare('INSERT INTO rl (day, iph, n) VALUES (?1, ?2, 1) ON CONFLICT(day, iph) DO UPDATE SET n = n + 1 RETURNING n')
     .bind(day, iph).first();
   // 順手清掉兩天前的紀錄

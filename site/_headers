@@ -3,6 +3,11 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
+  # CSP 只先開不會弄壞頁面的幾項（不讓別人用 iframe 嵌入、不准 <object>、不准改 <base>）。
+  # 還沒限制 script-src：Turnstile 和 <head> 裡的主題小 script 要另外設 hash／nonce，要在瀏覽器裡測過再加。
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'none'
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
 
 /downloads/*
   Content-Type: application/octet-stream

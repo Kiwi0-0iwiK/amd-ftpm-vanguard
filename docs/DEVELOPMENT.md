@@ -35,7 +35,9 @@
 - **匿名分享**：先顯示「會送出的內容」→ 勾選同意 → Turnstile 人機驗證 → `POST /api/submit`。送出的內容拿掉每場遊戲的時間，只留秒數和「同一秒還出錯的東西」的計數。
   - 匿名代碼 `id` = SHA-256（`amd-ftpm-vanguard|` + 主機 UUID + 主機板序號 + CPU ProcessorId）前 16 碼：無法反推，同一台電腦重新分享會覆蓋舊資料。
   - 伺服器（`server/lib.js` 的 `normalize`）自己重新挑欄位、檢查格式與範圍，不存送來的其他東西。
-  - IP 只以「日期＋IP＋固定字串」的雜湊存兩天，每天每個來源最多 30 次寫入。
+  - IP 只以「日期＋IP＋祕密鹽」的雜湊存兩天，每天每個來源最多 30 次寫入。鹽是祕密 `RL_SALT`（還沒設定時借用 `TURNSTILE_SECRET`）；原始碼公開，只用固定字串的話所有 IPv4 試一遍就能反推。
+  - 請求本文邊讀邊數大小（`readJson`）：`/api/submit` 最多 32 KB、`/api/delete` 最多 8 KB，沒帶 content-length 的分塊傳送也擋得住。
+  - 出錯場次比「能判斷的場次」（eligible）多的分享直接拒絕（`inconsistent`）。
   - `POST /api/delete` 用同一個 `id` 刪除。
 - **大家的結果**（`#stats`）：`GET /api/stats` 只回傳加總（總數、符合比例、出錯秒數分布、依 fTPM 版本／主機板、同一秒還出錯的東西），`?download=1` 下載 JSON。伺服器端快取的 key 帶著資料庫裡的版本號，每次分享／刪除 +1，統計馬上更新。
 - 離線版沒有後端：可以看自己的結果，但不能分享、看不到大家的結果。
@@ -50,6 +52,8 @@
 | `.dev.vars` | 本機測試用的 Turnstile 測試祕密（Cloudflare 公開的測試值），不進版本控制 |
 
 **Turnstile 設定**：網站金鑰寫在 `site/data/config.js`；祕密金鑰用 `npx wrangler pages secret put TURNSTILE_SECRET --project-name amd-ftpm-vanguard` 設定（由帳號擁有者自己貼，不要寫進任何檔案），設定後要重新部署一次才會生效。本機（localhost）會自動改用 Cloudflare 的測試金鑰。
+
+**流量限制的鹽**：`npx wrangler pages secret put RL_SALT --project-name amd-ftpm-vanguard`，貼一串夠長的隨機字串（同樣不要寫進任何檔案）。換鹽只會讓當天的流量計數重新開始。
 
 **本機測試整套（網站＋API＋本機資料庫）**：
 
@@ -163,7 +167,7 @@ npx wrangler login
 npx wrangler pages project create amd-ftpm-vanguard --production-branch main --force
 ```
 
-`site/_headers` 會讓下載的檔案一律用 `Content-Disposition: attachment`，另外加上 `nosniff`、`X-Frame-Options: DENY`。
+`site/_headers` 會讓下載的檔案一律用 `Content-Disposition: attachment`，另外加上 `nosniff`、`X-Frame-Options: DENY`、只含 `frame-ancestors`／`object-src`／`base-uri` 的 CSP、`Permissions-Policy`（相機、麥克風、定位全關）和 `Cross-Origin-Opener-Policy: same-origin-allow-popups`。`script-src` 還沒限制（Turnstile 和 `<head>` 裡的主題小 script 要另外給 hash，要在瀏覽器裡測過再加）。
 
 ## 用到的工具
 

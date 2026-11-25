@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
 const FTPM = createRequire(import.meta.url)(join(root, 'site/lib/result.js'));
-const { normalize, aggregate } = await import(pathToFileURL(join(root, 'server/lib.js')));
+const { normalize, aggregate, readJson } = await import(pathToFileURL(join(root, 'server/lib.js')));
 
 let passed = 0;
 const test = (name, fn) => { fn(); passed++; console.log(`  ok  ${name}`); };
@@ -88,6 +88,21 @@ test('normalize drops impossible offsets', () => {
   const p = FTPM.buildShare(fixture('v2.txt'));
   assert.equal(normalize({ ...p, offsets: [-5, 120, 99999] }).offsets.join(), '120');
 });
+
+test('normalize rejects more failures than eligible sessions', () => {
+  const p = FTPM.buildShare(fixture('v2.txt'));
+  assert.throws(() => normalize({ ...p, eligible: p.failed - 1 }), /inconsistent/);
+});
+{
+  // 請求本文的大小上限：沒有 content-length 的分塊傳送也要擋
+  const atest = async (name, fn) => { await fn(); passed++; console.log(`  ok  ${name}`); };
+  const post = (body, headers = {}) => new Request('https://example.test/api/submit', { method: 'POST', body, headers, duplex: 'half' });
+  const stream = (bytes) => new ReadableStream({ start(c) { for (let i = 0; i < bytes; i += 1024) c.enqueue(new Uint8Array(Math.min(1024, bytes - i)).fill(32)); c.close(); } });
+  await atest('readJson parses a small body', async () => assert.deepEqual(await readJson(post('{"a":1}')), { a: 1 }));
+  await atest('readJson rejects a large content-length', async () => assert.rejects(readJson(post('{}', { 'content-length': '999999' }), 100), /too_large/));
+  await atest('readJson stops a chunked body without content-length', async () => assert.rejects(readJson(post(stream(50000)), 32768), /too_large/));
+  await atest('readJson reports bad JSON', async () => assert.rejects(readJson(post('{oops')), /bad_json/));
+}
 
 console.log('aggregate');
 const rows = readdirSync(join(here, 'fixtures')).map((f) => store(fixture(f)));

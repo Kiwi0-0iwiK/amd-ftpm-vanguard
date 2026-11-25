@@ -81,7 +81,7 @@ npx wrangler pages dev --port 8788    # site + API + local D1 (Turnstile test ke
 npx wrangler pages deploy --project-name amd-ftpm-vanguard --branch main --commit-dirty=true
 ```
 
-The Turnstile secret is set with `npx wrangler pages secret put TURNSTILE_SECRET --project-name amd-ftpm-vanguard` and is never stored in this repository.
+The Turnstile secret is set with `npx wrangler pages secret put TURNSTILE_SECRET --project-name amd-ftpm-vanguard`, and the rate-limit salt with `npx wrangler pages secret put RL_SALT --project-name amd-ftpm-vanguard`; neither is ever stored in this repository.
 
 ## Third-party
 
