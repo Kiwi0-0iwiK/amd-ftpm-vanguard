@@ -231,7 +231,10 @@ footer p { margin: 4px 0; }
 @media (max-width: 860px) {
   .tiles { grid-template-columns: repeat(2, 1fr); }
   .split { grid-template-columns: 1fr; }
-  .nav { display: none; }
+  /* 窄螢幕收起導覽列，但調查頁要留「← 首頁」，不然在手機上回不到首頁 */
+  .nav { flex: none; }
+  .nav a:not(.nav-home) { display: none; }
+  .nav:not(:has(.nav-home)) { display: none; }
   .top .wrap { gap: 10px; }
   /* 窄螢幕上品牌名太長（英文）時用省略號，不要把語言切換和主題按鈕擠出畫面 */
   .brand { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }

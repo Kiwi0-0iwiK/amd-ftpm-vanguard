@@ -167,6 +167,10 @@ npx wrangler login
 npx wrangler pages project create amd-ftpm-vanguard --production-branch main --force
 ```
 
+兩頁 `<head>` 都有一小段行內 script，在畫面出現前套用 localStorage 的 `theme`（`light`／`dark`），避免先閃一下另一種顏色；不要拿掉或改成外部檔。之後 CSP 限制 `script-src` 時要給它 hash。
+
+窄螢幕（≤ 860px）導覽列收起來，只留調查頁的「← 首頁」（`.nav-home`）。
+
 `site/_headers` 會讓下載的檔案一律用 `Content-Disposition: attachment`，另外加上 `nosniff`、`X-Frame-Options: DENY`、只含 `frame-ancestors`／`object-src`／`base-uri` 的 CSP、`Permissions-Policy`（相機、麥克風、定位全關）和 `Cross-Origin-Opener-Policy: same-origin-allow-popups`。`script-src` 還沒限制（Turnstile 和 `<head>` 裡的主題小 script 要另外給 hash，要在瀏覽器裡測過再加）。
 
 ## 用到的工具
