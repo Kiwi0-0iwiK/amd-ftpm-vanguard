@@ -21,6 +21,29 @@ console.log('result.js');
 test('parse rejects text without the data block', () => assert.throws(() => FTPM.parseResult('hello'), /nomarker/));
 test('parse rejects unknown format versions', () => assert.throws(() => FTPM.parseResult('-----BEGIN FTPM-CHECK-----\n{"v":9,"sessions":[]}\n-----END FTPM-CHECK-----'), /version/));
 for (const f of readdirSync(join(here, 'fixtures'))) test(`parse ${f}`, () => assert.ok(fixture(f).sessions.length > 0));
+test('parse cleans a hand-edited (malicious) result file before the page puts it into HTML', () => {
+  const evil = '<img src=x onerror=alert(1)>';
+  const d = FTPM.parseResult(`-----BEGIN FTPM-CHECK-----\n${JSON.stringify({
+    v: 2, verdict: evil, sessions: [
+      { t: evil, off: 110, dur: 300, others: [evil, { x: 1 }, 5], vgk: { toString: 1 } },
+      { t: 12345, off: '<b>', dur: 'long', others: 'nope', vgk: 7 },
+      null, 'str', [1],
+    ],
+  })}\n-----END FTPM-CHECK-----`);
+  assert.equal(d.verdict, 'NODATA');
+  assert.equal(d.sessions.length, 2);
+  assert.deepEqual(d.sessions[0].others, [evil]);              // 字串留著（畫面跳脫），其他型別丟掉
+  assert.equal(d.sessions[0].vgk, null);
+  assert.deepEqual([d.sessions[1].t, d.sessions[1].off, d.sessions[1].dur, d.sessions[1].vgk], ['', null, null, null]);
+  assert.deepEqual(d.sessions[1].others, []);
+  for (const v of FTPM.VERDICTS) assert.equal(FTPM.parseResult(`-----BEGIN FTPM-CHECK-----{"v":2,"verdict":"${v}","sessions":[]}-----END FTPM-CHECK-----`).verdict, v);
+});
+test('the investigation page escapes result-file fields it puts into HTML', () => {
+  const app = readFileSync(join(root, 'site/app.js'), 'utf8');
+  assert.equal(app.includes('${d.verdict}'), false, 'raw verdict in a template');
+  assert.match(app, /tip\(esc\(s\.t\)/);
+  assert.match(app, /s\.others\.map\(esc\)/);
+});
 test('share drops per-session times', () => {
   const s = FTPM.buildShare(fixture('v2.txt'), 'en');
   assert.equal(JSON.stringify(s).includes('2026-11-0'), false);

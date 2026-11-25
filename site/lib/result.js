@@ -23,6 +23,23 @@
     if (!m) throw new Error('nomarker');
     const d = JSON.parse(m[1]);
     if (!FORMATS.includes(d.v) || !Array.isArray(d.sessions)) throw new Error('version');
+    return clean(d);
+  }
+
+  // 結果檔是使用者拖進來的檔案，任何人都能手改：網頁會把這些欄位放進 HTML（tooltip、表格），
+  // 所以在這裡先把型別整理好，verdict 只接受已知的四種。畫面那邊仍然要跳脫，這裡是第一道。
+  const VERDICTS = ['MATCH', 'POSSIBLE', 'NOMATCH', 'NODATA'];
+  const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
+  function clean(d) {
+    d.verdict = VERDICTS.includes(d.verdict) ? d.verdict : 'NODATA';
+    d.sessions = d.sessions.filter((s) => s && typeof s === 'object' && !Array.isArray(s)).map((s) => ({
+      ...s,
+      t: typeof s.t === 'string' ? s.t : '',
+      off: num(s.off),
+      dur: num(s.dur),
+      others: Array.isArray(s.others) ? s.others.filter((o) => typeof o === 'string') : [],
+      vgk: typeof s.vgk === 'string' && s.vgk ? s.vgk : null,
+    }));
     return d;
   }
 
@@ -67,7 +84,7 @@
     };
   }
 
-  const api = { RULE, FORMATS, parseResult, buildShare, deriveVerdict, byVgk };
+  const api = { RULE, FORMATS, VERDICTS, parseResult, buildShare, deriveVerdict, byVgk };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.FTPM = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

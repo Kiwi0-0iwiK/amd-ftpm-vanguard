@@ -809,9 +809,11 @@
     const fails = d.sessions.filter((s) => typeof s.off === 'number');
     const offs = fails.map((s) => s.off).sort((a, b) => a - b);
     const med = offs.length ? offs[Math.floor(offs.length / 2)] : null;
-    const vcls = { MATCH: 'match', POSSIBLE: 'possible', NOMATCH: 'nomatch', NODATA: 'nodata' }[d.verdict];
-    const vtxt = (L.test.results[{ MATCH: 0, POSSIBLE: 1, NOMATCH: 2, NODATA: 3 }[d.verdict]] || [])[1] || d.verdict;
-    $('#an-head').innerHTML = `<div class="r ${vcls} an-verdict"><code>${d.verdict}</code><strong>${esc(vtxt)}</strong></div>` +
+    // 結果檔可以被手改：verdict 只接受已知的四種（parseResult 已經整理過，這裡再擋一次），其他一律當 NODATA
+    const verdict = window.FTPM.VERDICTS.includes(d.verdict) ? d.verdict : 'NODATA';
+    const vcls = { MATCH: 'match', POSSIBLE: 'possible', NOMATCH: 'nomatch', NODATA: 'nodata' }[verdict];
+    const vtxt = (L.test.results[{ MATCH: 0, POSSIBLE: 1, NOMATCH: 2, NODATA: 3 }[verdict]] || [])[1] || verdict;
+    $('#an-head').innerHTML = `<div class="r ${vcls} an-verdict"><code>${verdict}</code><strong>${esc(vtxt)}</strong></div>` +
       [[d.loads, A.loads], [fails.length, A.fails], [med !== null ? med : '—', A.median], [d.outside, A.outside]]
         .map(([n, l]) => `<div class="tile"><div class="num">${esc(n)}</div><div class="lbl">${esc(l)}</div></div>`).join('');
     const others = {};
@@ -850,7 +852,7 @@
       animation: animate && !reduceMotion, animationDuration: 600, animationDelay: (i) => i * 20,
       textStyle: { fontFamily: K.sans },
       grid: { left: 112, right: 16, top: 30, bottom: 20 },
-      tooltip: { ...tooltipBase(K), trigger: 'item', confine: true, formatter: (p) => { const s = rows[p.value[1]]; return tip(s.t, [[L.tip.tpm, L.fmt.sec(s.off)], ...(s.vgk ? [[L.an.vgkH, esc(s.vgk.replace('T', ' ').replace('Z', ''))]] : []), ...(s.others.length ? [[L.an.othersH, s.others.map(esc).join('<br>')]] : [])]); } },
+      tooltip: { ...tooltipBase(K), trigger: 'item', confine: true, formatter: (p) => { const s = rows[p.value[1]]; return tip(esc(s.t), [[L.tip.tpm, L.fmt.sec(s.off)], ...(typeof s.vgk === 'string' && s.vgk ? [[L.an.vgkH, esc(s.vgk.replace('T', ' ').replace('Z', ''))]] : []), ...(s.others.length ? [[L.an.othersH, s.others.map(esc).join('<br>')]] : [])]); } },
       xAxis: { type: 'value', min: 0, max: XMAX, position: 'top', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: K.text3 }, splitLine: { lineStyle: { color: K.grid } } },
       yAxis: { type: 'category', inverse: true, data: rows.map((s) => s.t.slice(5)), axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: K.text2, fontFamily: K.mono, fontSize: 11 } },
       series: [{
