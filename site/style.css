@@ -73,6 +73,11 @@ code, .mono { font-family: var(--mono); font-size: .92em; }
 .top .wrap { display: flex; align-items: center; gap: 20px; height: 52px; }
 .brand { font-weight: 700; letter-spacing: .02em; white-space: nowrap; color: var(--text); text-decoration: none; }
 .brand small { color: var(--text-3); font-weight: 500; margin-left: 8px; font-size: 13px; }
+/* 窄螢幕（≤480px）改用短名稱，完整名稱放在連結的 aria-label 和網頁標題 */
+.brand .b-short { display: none; }
+@media (max-width: 480px) { .brand .b-full { display: none; } .brand .b-short { display: inline; } }
+/* 可以左右捲動的框（表格、終端機輸出、指令）有 tabindex，鍵盤可以捲；聚焦時要看得到 */
+.tablewrap:focus-visible, pre.term:focus-visible, .cmd code:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .nav { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; flex: 1; }
 .nav a { color: var(--text-2); text-decoration: none; font-size: 14px; white-space: nowrap; }
 .nav a:hover { color: var(--text); }

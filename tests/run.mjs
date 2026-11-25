@@ -113,6 +113,22 @@ console.log('i18n');
       assert.ok(I[l].ui.nav.home, `${l} ui.nav.home`);
     }
   });
+  test('every data-i / data-i-label key in the pages exists in every language', () => {
+    const get = (o, path) => path.split('.').reduce((x, k) => (x == null ? x : x[k]), o);
+    for (const page of ['index.html', 'investigation.html']) {
+      const html = readFileSync(join(root, 'site', page), 'utf8');
+      const keys = [...html.matchAll(/data-i(?:-label)?="([^"]+)"/g)].map((m) => m[1]);
+      assert.ok(keys.length > 20, page);
+      for (const l of ['zh-TW', 'zh-CN', 'en']) for (const k of keys) assert.equal(typeof get(I[l], k), 'string', `${page}: ${l} ${k}`);
+    }
+  });
+  test('scrollable boxes are keyboard-focusable labelled regions', () => {
+    const html = readFileSync(join(root, 'site', 'investigation.html'), 'utf8');
+    const boxes = html.match(/<(?:div class="tablewrap"|pre class="term"|code id="cmd-text")[^>]*>/g);
+    assert.ok(boxes.length >= 7);
+    for (const b of boxes) assert.match(b, /tabindex="0" role="region" data-i-label=/, b);
+    for (const c of html.match(/<div id="chart-[^"]+" class="chart"[^>]*>/g)) assert.match(c, /role="img" data-i-label="a11y\.\w+" aria-describedby=/, c);
+  });
 }
 
 console.log(`\n${passed} passed`);

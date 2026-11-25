@@ -13,9 +13,18 @@ window.I18N['zh-CN'] = {
     num: (n) => n.toLocaleString('zh-CN'),
   },
   ui: {
-    brand: 'fTPM 故障调查', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
+    brand: 'fTPM 故障调查', brandShort: 'fTPM 调查', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
     toDark: '深色', toLight: '浅色', lang: '语言',
     nav: { home: '← 首页', impact: '影响范围', overview: '事件总览', timing: '110 秒', ms: '毫秒顺序', story: '调查过程', hyp: '假设', test: '自己检查', stats: '大家的结果', shots: '截图', data: '数据' },
+  },
+
+  a11y: {
+    lanes: '事件总览图：游戏场次、TPM 错误、网卡挂掉、WiFi 连接与开机的时间轴。每一场的数字在页面下方“数据”的表格。',
+    offset: '每场游戏对齐 vgk 加载时间：TPM 错误出现在第几秒，以及 WiFi 有没有扛住。旁边的表格是同样数据的统计。',
+    ms: '一次故障的事件先后顺序（毫秒或微秒），文字说明在图的下方。',
+    mine: '你的结果：每场游戏的 TPM 错误出现在 vgk 加载后第几秒。',
+    hist: '大家的出错时间分布：vgk 加载后各个秒数区间出错的次数。',
+    cmd: '运行脚本的 PowerShell 命令',
   },
 
   intro: {

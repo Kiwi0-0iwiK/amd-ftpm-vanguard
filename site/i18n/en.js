@@ -15,9 +15,18 @@ window.I18N = window.I18N || {};
       num: (n) => n.toLocaleString('en'),
     },
     ui: {
-      brand: 'fTPM Failure', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
+      brand: 'fTPM Failure', brandShort: 'fTPM', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
       toDark: 'Dark', toLight: 'Light', lang: 'Language',
       nav: { home: '← Home', impact: 'Impact', overview: 'Events', timing: '110 s', ms: 'Sequence', story: 'Timeline', hyp: 'Hypotheses', test: 'Check yours', stats: 'Everyone', shots: 'Screenshots', data: 'Data' },
+    },
+
+    a11y: {
+      lanes: 'Event overview: game sessions, TPM errors, Wi-Fi failures, Wi-Fi connections and boots on a timeline. The numbers for every session are in the table under Data at the bottom of the page.',
+      offset: 'Every game aligned to the moment vgk loaded: the second at which the TPM error appeared, and whether the Wi-Fi survived. The table next to it summarizes the same data.',
+      ms: 'Order of events in one failure (milliseconds or microseconds); the text description is below the chart.',
+      mine: 'Your result: the second after vgk loaded at which the TPM error appeared, for each game.',
+      hist: 'Everyone\'s failure times: number of failures in each range of seconds after vgk loaded.',
+      cmd: 'PowerShell command that runs the script',
     },
 
     intro: {

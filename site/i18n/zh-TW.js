@@ -13,9 +13,18 @@ window.I18N['zh-TW'] = {
     num: (n) => n.toLocaleString('zh-TW'),
   },
   ui: {
-    brand: 'fTPM 出錯調查', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
+    brand: 'fTPM 出錯調查', brandShort: 'fTPM 調查', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
     toDark: '深色', toLight: '淺色', lang: '語言',
     nav: { home: '← 首頁', impact: '影響範圍', overview: '事件總覽', timing: '110 秒', ms: '毫秒順序', story: '調查歷程', hyp: '假設', test: '自己檢查', stats: '大家的結果', shots: '截圖', data: '資料' },
+  },
+
+  a11y: {
+    lanes: '事件總覽圖：遊戲場次、TPM 錯誤、網卡掛掉、WiFi 連線與開機的時間軸。每一場的數字在頁面下方「資料」的表格。',
+    offset: '每場遊戲對齊 vgk 載入時間：TPM 錯誤出現在第幾秒，以及 WiFi 有沒有撐住。旁邊的表格是同樣資料的統計。',
+    ms: '一次故障的事件先後順序（毫秒或微秒），文字說明在圖的下方。',
+    mine: '你的結果：每場遊戲的 TPM 錯誤出現在 vgk 載入後第幾秒。',
+    hist: '大家的出錯時間分布：vgk 載入後各個秒數區間出錯的次數。',
+    cmd: '執行腳本的 PowerShell 指令',
   },
 
   intro: {

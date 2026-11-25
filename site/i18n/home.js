@@ -7,6 +7,7 @@
     title: 'AMD 電腦玩 Riot 遊戲，安全晶片可能正在出錯',
     description: '用 AMD 處理器玩特戰英豪等 Riot 遊戲？反作弊啟動一百多秒後，CPU 內建的安全晶片（fTPM）可能會出錯，而且出錯時不會有任何通知。1 分鐘檢查你的電腦，匿名分享結果，讓 AMD 和 Riot 更快修好。',
     brand: 'AMD 安全晶片檢查',
+    brandShort: '晶片檢查',
     nav: { what: '會怎樣', why: '為什麼要檢查', test: '1 分鐘檢查', fix: '怎麼辦', faq: '常見問題', more: '完整調查紀錄' },
     hero: {
       kicker: 'AMD 處理器 ＋ Riot 遊戲的玩家',
@@ -120,6 +121,7 @@
     title: '用 AMD 电脑玩 Riot 游戏，安全芯片可能正在出错',
     description: '用 AMD 处理器玩无畏契约等 Riot 游戏？反作弊启动一百多秒后，CPU 内置的安全芯片（fTPM）可能会出错，而且出错时不会有任何通知。1 分钟检查你的电脑，匿名分享结果，让 AMD 和 Riot 更快修好。',
     brand: 'AMD 安全芯片检查',
+    brandShort: '芯片检查',
     nav: { what: '会怎样', why: '为什么要检查', test: '1 分钟检查', fix: '怎么办', faq: '常见问题', more: '完整调查记录' },
     hero: {
       kicker: 'AMD 处理器 ＋ Riot 游戏的玩家',
@@ -233,6 +235,7 @@
     title: 'AMD PC + Riot games: your security chip may be failing',
     description: 'Playing VALORANT or another Riot game on an AMD PC? About two minutes after the anti-cheat starts, the security chip built into the CPU (fTPM) can fail, and it gives no warning when it does. Check your PC in a minute and share the result anonymously to help get it fixed.',
     brand: 'AMD security chip check',
+    brandShort: 'Chip check',
     nav: { what: 'What happens', why: 'Why check', test: 'Check in 1 min', fix: 'What to do', faq: 'FAQ', more: 'Full investigation' },
     hero: {
       kicker: 'For players with an AMD CPU and a Riot game',

@@ -20,14 +20,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <!-- FONTS:END -->
-  <link rel="stylesheet" href="style.css?v=dd8a2c8c">
+  <link rel="stylesheet" href="style.css?v=02d0e1c0">
 </head>
 <body>
   <div class="progress" id="progress"></div>
 
   <header class="top" id="top">
     <div class="wrap">
-      <a class="brand" href="#intro"><span data-i="ui.brand"></span></a>
+      <a class="brand" href="#intro" data-i-label="ui.brand"><span class="b-full" data-i="ui.brand"></span><span class="b-short" data-i="ui.brandShort"></span></a>
       <nav class="nav" id="nav">
         <a href="./" class="nav-home" data-i="ui.nav.home"></a>
         <a href="#impact" data-i="ui.nav.impact"></a>
@@ -188,7 +188,7 @@
 
     <section class="block reveal" id="overview">
       <h2 data-i="overview.h"></h2>
-      <p class="desc" data-i="overview.desc"></p>
+      <p class="desc" id="overview-desc" data-i="overview.desc"></p>
       <div class="card">
         <div class="toolbar" id="lane-presets">
           <button class="chip on" data-range="all" type="button" data-i="overview.presets.all"></button>
@@ -204,13 +204,13 @@
           <span><i class="lg-bar" style="background:var(--c-conn)"></i><span data-i="overview.legend.conn"></span></span>
           <span><i class="lg-tick" style="background:var(--c-boot)"></i><span data-i="overview.legend.boot"></span></span>
         </div>
-        <div id="chart-lanes" class="chart" role="img"></div>
+        <div id="chart-lanes" class="chart" role="img" data-i-label="a11y.lanes" aria-describedby="overview-desc"></div>
       </div>
     </section>
 
     <section class="block reveal" id="timing">
       <h2 data-i="timing.h"></h2>
-      <p class="desc" data-i="timing.desc"></p>
+      <p class="desc" id="timing-desc" data-i="timing.desc"></p>
       <div class="split">
         <div class="card">
           <div class="legend">
@@ -219,7 +219,7 @@
             <span><i class="lg-ring" style="color:var(--c-boot)"></i><span data-i="timing.legend.down"></span></span>
             <span class="legend-axis" data-i="timing.legend.axis"></span>
           </div>
-          <div id="chart-offset" class="chart" role="img"></div>
+          <div id="chart-offset" class="chart" role="img" data-i-label="a11y.offset" aria-describedby="timing-desc matrix-note"></div>
         </div>
         <div class="sticky-side">
           <div class="card">
@@ -245,7 +245,7 @@
             <button type="button" data-mode="us" data-i="ms.modeUs"></button>
           </span>
         </div>
-        <div id="chart-ms" class="chart" role="img"></div>
+        <div id="chart-ms" class="chart" role="img" data-i-label="a11y.ms" aria-describedby="ms-caption"></div>
         <p class="ms-caption" id="ms-caption"></p>
       </div>
     </section>
@@ -299,7 +299,7 @@
             </a>
             <ol class="howto" id="test-how"></ol>
             <div class="cmd">
-              <code id="cmd-text">powershell -NoProfile -ExecutionPolicy Bypass -File .\check-amd-ftpm-vanguard.ps1</code>
+              <code id="cmd-text" tabindex="0" role="region" data-i-label="a11y.cmd">powershell -NoProfile -ExecutionPolicy Bypass -File .\check-amd-ftpm-vanguard.ps1</code>
               <button type="button" class="copy" id="cmd-copy" data-i="test.copy"></button>
             </div>
             <p class="small" data-i="test.cmdNote"></p>
@@ -309,7 +309,7 @@
       </div>
       <div class="card term-card">
         <h3 data-i="test.sampleH"></h3>
-        <pre class="term" id="sample"></pre>
+        <pre class="term" id="sample" tabindex="0" role="region" data-i-label="test.sampleH"></pre>
         <p class="small term-note" data-i="test.shortNote"></p>
       </div>
       <h3 class="sub-h" data-i="test.resultH"></h3>
@@ -328,13 +328,13 @@
         <div id="an-out" hidden>
           <div class="an-head" id="an-head"></div>
           <div class="an-grid">
-            <div class="an-chart"><div id="chart-mine" class="chart" role="img"></div></div>
+            <div class="an-chart"><div id="chart-mine" class="chart" role="img" data-i-label="a11y.mine" aria-describedby="an-head"></div></div>
             <div class="an-side" id="an-side"></div>
           </div>
           <div class="share" id="share">
             <h3 data-i="sh.h"></h3>
             <p class="small top0" data-i="sh.desc"></p>
-            <details class="sh-prev"><summary data-i="sh.preview"></summary><pre class="term" id="sh-json"></pre></details>
+            <details class="sh-prev"><summary data-i="sh.preview"></summary><pre class="term" id="sh-json" tabindex="0" role="region" data-i-label="sh.preview"></pre></details>
             <label class="consent"><input type="checkbox" id="sh-ok"> <span data-i="sh.consent"></span></label>
             <div id="ts-box" class="ts-box"></div>
             <div class="sh-actions">
@@ -360,14 +360,14 @@
       <div id="st-body" hidden>
         <div class="tiles" id="st-tiles"></div>
         <div class="st-grid">
-          <div class="card"><h3 data-i="st.histH"></h3><div id="chart-hist" class="chart" role="img"></div></div>
-          <div class="card"><h3 data-i="st.othersH"></h3><p class="small top0" data-i="st.othersDesc"></p><div class="tablewrap"><table class="data" id="st-others"></table></div></div>
+          <div class="card"><h3 data-i="st.histH"></h3><div id="chart-hist" class="chart" role="img" data-i-label="a11y.hist" aria-describedby="st-tiles"></div></div>
+          <div class="card"><h3 data-i="st.othersH"></h3><p class="small top0" data-i="st.othersDesc"></p><div class="tablewrap" tabindex="0" role="region" data-i-label="st.othersH"><table class="data" id="st-others"></table></div></div>
         </div>
         <div class="st-grid">
-          <div class="card"><h3 data-i="st.tpmH"></h3><div class="tablewrap"><table class="data" id="st-tpm"></table></div></div>
-          <div class="card"><h3 data-i="st.boardH"></h3><div class="tablewrap"><table class="data" id="st-board"></table></div></div>
+          <div class="card"><h3 data-i="st.tpmH"></h3><div class="tablewrap" tabindex="0" role="region" data-i-label="st.tpmH"><table class="data" id="st-tpm"></table></div></div>
+          <div class="card"><h3 data-i="st.boardH"></h3><div class="tablewrap" tabindex="0" role="region" data-i-label="st.boardH"><table class="data" id="st-board"></table></div></div>
         </div>
-        <div class="card st-wide"><h3 data-i="st.vgkH"></h3><p class="small top0" data-i="st.vgkDesc"></p><div class="tablewrap"><table class="data" id="st-vgk"></table></div><p class="small" id="st-vgk-note"></p></div>
+        <div class="card st-wide"><h3 data-i="st.vgkH"></h3><p class="small top0" data-i="st.vgkDesc"></p><div class="tablewrap" tabindex="0" role="region" data-i-label="st.vgkH"><table class="data" id="st-vgk"></table></div><p class="small" id="st-vgk-note"></p></div>
         <p class="small"><span id="st-updated"></span> · <a href="/api/stats?download=1" id="st-dl" data-i="st.download"></a></p>
       </div>
       <p class="small" data-i="st.privacy"></p>
@@ -385,7 +385,7 @@
       <div class="card">
         <details class="tbl">
           <summary id="data-summary"></summary>
-          <div class="tablewrap"><table class="data" id="session-table"></table></div>
+          <div class="tablewrap" tabindex="0" role="region" data-i-label="data.h"><table class="data" id="session-table"></table></div>
         </details>
       </div>
     </section>
@@ -401,9 +401,9 @@
   <script src="data/downloads.js?v=87ffc884"></script>
   <script src="data/config.js?v=b7279f89"></script>
   <script src="lib/result.js?v=515723cc"></script>
-  <script src="i18n/zh-TW.js?v=09412bc9"></script>
-  <script src="i18n/zh-CN.js?v=8870f2d8"></script>
-  <script src="i18n/en.js?v=121139e6"></script>
-  <script src="app.js?v=beb7d872"></script>
+  <script src="i18n/zh-TW.js?v=06b32ada"></script>
+  <script src="i18n/zh-CN.js?v=9ee9ad3c"></script>
+  <script src="i18n/en.js?v=52156cae"></script>
+  <script src="app.js?v=66367bf8"></script>
 </body>
 </html>

@@ -61,6 +61,11 @@
       const v = get(el.dataset.i);
       if (typeof v === 'string') el.innerHTML = v;
     });
+    // data-i-label：翻譯過的 aria-label（圖表、可捲動的框、品牌名）
+    $$('[data-i-label]').forEach((el) => {
+      const v = get(el.dataset.iLabel);
+      if (typeof v === 'string') el.setAttribute('aria-label', v.replace(/<[^>]+>/g, ''));
+    });
     syncThemeBtn();
     $('#lang-switch').innerHTML = LANGS.map((k) => `<button type="button" data-lang="${k}" class="${k === lang ? 'on' : ''}" title="${window.I18N[k].meta.name}">${window.I18N[k].meta.label}</button>`).join('');
     // 換語言時，連到調查頁的連結也帶著語言
