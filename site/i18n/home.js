@@ -86,6 +86,7 @@
       consent: '我同意匿名分享這份結果，用於統計。',
       what: '會送出什麼？',
       wd: '已經分享過、想撤回？',
+      sent: '已分享，謝謝！上面「為什麼你的檢查很重要」的數字已經更新。之後想撤回，打開下面的「已經分享過、想撤回？」。',
     },
     fix: {
       h: '我有這個問題，怎麼辦？',
@@ -201,6 +202,7 @@
       consent: '我同意匿名分享这份结果，用于统计。',
       what: '会发送什么？',
       wd: '已经分享过、想撤回？',
+      sent: '已分享，谢谢！上面“为什么你的检查很重要”的数字已经更新。之后想撤回，打开下面的“已经分享过、想撤回？”。',
     },
     fix: {
       h: '我有这个问题，怎么办？',
@@ -316,6 +318,7 @@
       consent: 'I agree to share this result anonymously for the statistics.',
       what: 'What is sent?',
       wd: 'Already shared and want to withdraw?',
+      sent: 'Shared, thank you! The numbers under "Why your check matters" above are updated. To withdraw later, open "Already shared and want to withdraw?" below.',
     },
     fix: {
       h: 'I have this problem. What now?',

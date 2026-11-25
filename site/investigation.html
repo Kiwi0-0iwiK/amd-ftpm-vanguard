@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <!-- FONTS:END -->
-  <link rel="stylesheet" href="style.css?v=8608c999">
+  <link rel="stylesheet" href="style.css?v=709d6da4">
 </head>
 <body>
   <div class="progress" id="progress"></div>
@@ -193,9 +193,9 @@
       <p class="desc" id="overview-desc" data-i="overview.desc"></p>
       <div class="card">
         <div class="toolbar" id="lane-presets">
-          <button class="chip on" data-range="all" type="button" data-i="overview.presets.all"></button>
-          <button class="chip" data-range="peak" type="button" data-i="overview.presets.peak"></button>
-          <button class="chip" data-range="week" type="button" data-i="overview.presets.week"></button>
+          <button class="chip on" data-range="all" type="button" aria-pressed="true" data-i="overview.presets.all"></button>
+          <button class="chip" data-range="peak" type="button" aria-pressed="false" data-i="overview.presets.peak"></button>
+          <button class="chip" data-range="week" type="button" aria-pressed="false" data-i="overview.presets.week"></button>
           <span class="hint" data-i="overview.hint"></span>
         </div>
         <div class="legend">
@@ -243,8 +243,8 @@
           <label for="ms-sel" class="lbl" data-i="ms.pick"></label>
           <select id="ms-sel" class="sel"></select>
           <span class="seg seg-sm" id="ms-mode">
-            <button type="button" data-mode="ms" class="on" data-i="ms.modeMs"></button>
-            <button type="button" data-mode="us" data-i="ms.modeUs"></button>
+            <button type="button" data-mode="ms" class="on" aria-pressed="true" data-i="ms.modeMs"></button>
+            <button type="button" data-mode="us" aria-pressed="false" data-i="ms.modeUs"></button>
           </span>
         </div>
         <div id="chart-ms" class="chart" role="img" data-i-label="a11y.ms" aria-describedby="ms-caption"></div>
@@ -326,7 +326,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 20h14"/></svg>
           <span data-i="an.drop"></span>
         </label>
-        <p class="an-err" id="an-err" hidden></p>
+        <p class="an-err" id="an-err" role="alert" hidden></p>
         <div id="an-out" hidden>
           <div class="an-head" id="an-head"></div>
           <div class="an-grid">
@@ -395,7 +395,7 @@
 
   <footer class="wrap" id="footer"></footer>
 
-  <dialog class="lightbox" id="lightbox"><img alt=""><p></p></dialog>
+  <dialog class="lightbox" id="lightbox" closedby="any"><form method="dialog"><button class="lb-close" type="submit" data-i-label="ui.close">×</button></form><img alt=""><p></p></dialog>
 
   <script src="vendor/echarts.min.js?v=bf4a2235"></script>
   <script src="data/timeline.js?v=a37edc4e"></script>
@@ -403,9 +403,9 @@
   <script src="data/downloads.js?v=87ffc884"></script>
   <script src="data/config.js?v=b7279f89"></script>
   <script src="lib/result.js?v=d380ca15"></script>
-  <script src="i18n/zh-TW.js?v=06b32ada"></script>
-  <script src="i18n/zh-CN.js?v=9ee9ad3c"></script>
-  <script src="i18n/en.js?v=52156cae"></script>
-  <script src="app.js?v=13d66103"></script>
+  <script src="i18n/zh-TW.js?v=77948fb2"></script>
+  <script src="i18n/zh-CN.js?v=23803148"></script>
+  <script src="i18n/en.js?v=81d0a9df"></script>
+  <script src="app.js?v=bfa06aa7"></script>
 </body>
 </html>

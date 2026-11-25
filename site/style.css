@@ -194,7 +194,14 @@ select.sel {
 .mfoot { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: center; }
 .tag { font-family: var(--mono); font-size: 11.5px; color: var(--text-3); border: 1px solid var(--border); border-radius: 6px; padding: 0 6px; }
 .linkbtn { border: 0; background: none; color: var(--accent); font: inherit; font-size: 13px; cursor: pointer; padding: 0; }
-.thumb { display: block; margin-top: 10px; max-width: 360px; width: 100%; border-radius: 8px; border: 1px solid var(--border); cursor: zoom-in; }
+.thumb { display: block; max-width: 360px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); cursor: zoom-in; }
+/* 縮圖和截圖外面包一個 <button>，鍵盤也能打開大圖 */
+.thumb-open, .shot-open { display: block; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: zoom-in; text-align: left; }
+.thumb-open { margin-top: 10px; width: 100%; max-width: 360px; border-radius: 8px; }
+.shot-open { width: 100%; }
+.thumb-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* figure 有 overflow: hidden，外框要往內畫才看得到 */
+.shot-open:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
 
 /* ---------- hypotheses ---------- */
 .hyp { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
@@ -215,6 +222,12 @@ dialog.lightbox { border: 0; padding: 0; background: transparent; max-width: 96v
 dialog.lightbox::backdrop { background: rgba(0,0,0,.78); }
 dialog.lightbox img { max-width: 96vw; max-height: 88vh; display: block; border-radius: 8px; }
 dialog.lightbox p { color: #eee; text-align: center; margin: 8px 0 0; font-size: 14px; }
+.lb-close {
+  position: absolute; top: 8px; right: 8px; z-index: 1; min-width: 36px; min-height: 36px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.5); background: rgba(0,0,0,.65); color: #fff; font: 22px/1 system-ui, sans-serif; cursor: pointer;
+}
+.lb-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.h-copy-msg { margin-left: 10px; color: var(--text-2); }
 
 /* ---------- table ---------- */
 details.tbl summary { cursor: pointer; color: var(--text-2); font-size: 14px; }

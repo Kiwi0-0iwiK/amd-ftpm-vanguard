@@ -16,7 +16,7 @@ window.I18N = window.I18N || {};
     },
     ui: {
       brand: 'fTPM Failure', brandShort: 'fTPM', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
-      toDark: 'Dark', toLight: 'Light', lang: 'Language',
+      toDark: 'Dark', toLight: 'Light', lang: 'Language', close: 'Close',
       nav: { home: '← Home', impact: 'Impact', overview: 'Events', timing: '110 s', ms: 'Sequence', story: 'Timeline', hyp: 'Hypotheses', test: 'Check yours', stats: 'Everyone', shots: 'Screenshots', data: 'Data' },
     },
 

@@ -12,6 +12,14 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const imgSrc = (n) => (window.TIMELINE_IMAGES && window.TIMELINE_IMAGES[n]) || `img/${n}.webp`;
+  // 截圖的原始尺寸（site/img/*.webp）：寫進 width／height，延遲載入的圖才不會在捲動途中把版面往下推（跳到錨點會跑掉）
+  const IMG_SIZE = {
+    'bios-1681': [1600, 900], 'event17-details': [1600, 668], 'eventviewer-tpm': [1600, 860], msinfo32: [1020, 950],
+    'tpm-after': [1600, 338], 'tpm-before': [1600, 338], 'tpm-failed': [1036, 738],
+  };
+  const imgDims = (n) => (IMG_SIZE[n] ? ` width="${IMG_SIZE[n][0]}" height="${IMG_SIZE[n][1]}"` : '');
+  // 切換按鈕（語言、總覽區間、毫秒／微秒）：.on 樣式和 aria-pressed 一起更新
+  const setPressed = (btns, onEl) => btns.forEach((b) => { b.classList.toggle('on', b === onEl); b.setAttribute('aria-pressed', String(b === onEl)); });
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
     get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -104,7 +112,7 @@
       if (typeof v === 'string') el.setAttribute('aria-label', v.replace(/<[^>]+>/g, ''));
     });
     syncThemeBtn();
-    $('#lang-switch').innerHTML = LANGS.map((k) => `<button type="button" data-lang="${k}" class="${k === lang ? 'on' : ''}" title="${window.I18N[k].meta.name}">${window.I18N[k].meta.label}</button>`).join('');
+    $('#lang-switch').innerHTML = LANGS.map((k) => `<button type="button" data-lang="${k}" class="${k === lang ? 'on' : ''}" aria-pressed="${k === lang}" lang="${window.I18N[k].meta.htmlLang}" title="${window.I18N[k].meta.name}">${window.I18N[k].meta.label}</button>`).join('');
   }
   $('#lang-switch').addEventListener('click', (e) => {
     const b = e.target.closest('[data-lang]');
@@ -404,7 +412,7 @@
     chart.on('datazoom', () => {
       const o = chart.getOption().dataZoom[0];
       if (o.startValue != null) lanesRange = [o.startValue, o.endValue];
-      $$('#lane-presets .chip').forEach((c) => c.classList.remove('on'));
+      setPressed($$('#lane-presets .chip'), null);
     });
     if (lanesRange[0] !== T0 || lanesRange[1] !== T1) chart.dispatchAction({ type: 'dataZoom', startValue: lanesRange[0], endValue: lanesRange[1] });
   };
@@ -415,7 +423,7 @@
     lanesMark = mark || null;
     if (!drawn['chart-lanes']) { drawn['chart-lanes'] = true; chartObs.unobserve($('#chart-lanes')); }
     DRAW['chart-lanes'](false);   // 重畫才會套用標記；DRAW 結尾會縮放到 lanesRange
-    $$('#lane-presets .chip').forEach((c) => c.classList.toggle('on', c === presetEl));
+    setPressed($$('#lane-presets .chip'), presetEl);
   }
   $$('#lane-presets .chip').forEach((c) => c.addEventListener('click', () => {
     const r = c.dataset.range;
@@ -504,7 +512,7 @@
     const b = e.target.closest('[data-mode]');
     if (!b || b.dataset.mode === msMode) return;
     msMode = b.dataset.mode;
-    $$('#ms-mode button').forEach((x) => x.classList.toggle('on', x === b));
+    setPressed($$('#ms-mode button'), b);
     if (drawn['chart-ms']) DRAW['chart-ms'](true);
   });
 
@@ -623,7 +631,7 @@
             <div class="mhead"><span class="mtime">${when}</span><span class="mtitle">${esc(M.title)}</span><span class="badge ${vc}">${vl}</span></div>
             <p class="mbody">${esc(M.body)}</p>
             ${tags || jump ? `<div class="mfoot">${tags}${jump}</div>` : ''}
-            ${m.img ? `<img class="thumb" loading="lazy" src="${imgSrc(m.img)}" alt="${esc(M.title)}" data-cap="${esc(M.title)}">` : ''}
+            ${m.img ? `<button type="button" class="thumb-open"><img class="thumb" loading="lazy" src="${imgSrc(m.img)}"${imgDims(m.img)} alt="${esc(M.title)}" data-cap="${esc(M.title)}"></button>` : ''}
           </div></li>`;
       }).join('');
       box.insertAdjacentHTML('beforeend', `<div class="phase"><div class="phase-head"><h3>${esc(P.title)}</h3><span>${esc(P.sub)}</span></div><ol class="story">${ol}</ol></div>`);
@@ -737,7 +745,9 @@
   $('#cmd-copy').addEventListener('click', async (e) => {
     const b = e.currentTarget;
     try { await navigator.clipboard.writeText($('#cmd-text').textContent); } catch {
+      // 剪貼簿被擋：把指令選起來讓使用者自己按 Ctrl+C，但不要顯示「已複製」
       const r = document.createRange(); r.selectNodeContents($('#cmd-text')); getSelection().removeAllRanges(); getSelection().addRange(r);
+      return;
     }
     b.textContent = L.test.copied; b.classList.add('done');
     setTimeout(() => { b.textContent = L.test.copy; b.classList.remove('done'); }, 1600);
@@ -747,16 +757,24 @@
   function renderGallery() {
     $('#gallery').innerHTML = SHOTS.map((n) => {
       const [t, c] = L.shots.items[n];
-      return `<figure data-img="${n}" data-cap="${esc(t)}"><img loading="lazy" src="${imgSrc(n)}" alt="${esc(t)}"><figcaption><b>${esc(t)}</b>${esc(c)}</figcaption></figure>`;
+      return `<figure data-img="${n}" data-cap="${esc(t)}"><button type="button" class="shot-open"><img loading="lazy" src="${imgSrc(n)}"${imgDims(n)} alt="${esc(t)}"></button><figcaption><b>${esc(t)}</b>${esc(c)}</figcaption></figure>`;
     }).join('');
   }
   const lb = $('#lightbox');
-  const openLb = (src, cap) => { lb.querySelector('img').src = src; lb.querySelector('p').textContent = cap; lb.showModal(); };
+  // 大圖：原生 <dialog> showModal()（焦點會進到對話框、關掉後回到原本的按鈕）；點任何地方、按 Esc 或關閉鈕都會關。
+  // 截圖和縮圖外面包的是真正的 <button>，鍵盤也打得開
+  const openLb = (src, cap) => {
+    const img = lb.querySelector('img');
+    img.src = src; img.alt = cap;
+    lb.querySelector('p').textContent = cap;
+    lb.setAttribute('aria-label', cap);
+    lb.showModal();
+  };
   document.addEventListener('click', (e) => {
-    const f = e.target.closest('#gallery figure');
-    if (f) return openLb(imgSrc(f.dataset.img), f.dataset.cap);
-    const t = e.target.closest('img.thumb');
-    if (t) openLb(t.src, t.dataset.cap);
+    const f = e.target.closest('#gallery .shot-open');
+    if (f) { const fig = f.closest('figure'); openLb(imgSrc(fig.dataset.img), fig.dataset.cap); return; }
+    const t = e.target.closest('.thumb-open');
+    if (t) { const img = t.querySelector('img'); openLb(img.src, img.dataset.cap); }
   });
   lb.addEventListener('click', () => lb.close());
 

@@ -14,7 +14,7 @@ window.I18N['zh-TW'] = {
   },
   ui: {
     brand: 'fTPM 出錯調查', brandShort: 'fTPM 調查', brandSub: 'AMD fTPM × Vanguard × RTL8922AE',
-    toDark: '深色', toLight: '淺色', lang: '語言',
+    toDark: '深色', toLight: '淺色', lang: '語言', close: '關閉',
     nav: { home: '← 首頁', impact: '影響範圍', overview: '事件總覽', timing: '110 秒', ms: '毫秒順序', story: '調查歷程', hyp: '假設', test: '自己檢查', stats: '大家的結果', shots: '截圖', data: '資料' },
   },
 

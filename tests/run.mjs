@@ -160,6 +160,7 @@ console.log('i18n');
       for (const k of ['drop', 'shortDesc', 'notAmd', 'sysH', 'vgkH', 'failedOf']) assert.ok(I[l].an[k], `${l} an.${k}`);
       for (const k of ['send', 'delete', 'privacy', 'wdDesc', 'confirmDel', 'msg']) assert.ok(I[l].sh[k], `${l} sh.${k}`);
       assert.ok(I[l].ui.nav.home, `${l} ui.nav.home`);
+      assert.ok(I[l].home.sh.sent, `${l} home.sh.sent`);   // 首頁自己的「已分享」說法
     }
   });
   test('every data-i / data-i-label key in the pages exists in every language', () => {

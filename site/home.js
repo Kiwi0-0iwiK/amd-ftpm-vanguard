@@ -69,7 +69,7 @@
       if (typeof v === 'string') el.setAttribute('aria-label', v.replace(/<[^>]+>/g, ''));
     });
     syncThemeBtn();
-    $('#lang-switch').innerHTML = LANGS.map((k) => `<button type="button" data-lang="${k}" class="${k === lang ? 'on' : ''}" title="${window.I18N[k].meta.name}">${window.I18N[k].meta.label}</button>`).join('');
+    $('#lang-switch').innerHTML = LANGS.map((k) => `<button type="button" data-lang="${k}" class="${k === lang ? 'on' : ''}" aria-pressed="${k === lang}" lang="${window.I18N[k].meta.htmlLang}" title="${window.I18N[k].meta.name}">${window.I18N[k].meta.label}</button>`).join('');
     // 換語言時，連到調查頁的連結也帶著語言
     $$('a[href^="investigation.html"]').forEach((a) => {
       const [path, hash] = a.getAttribute('href').split('#');
@@ -207,7 +207,8 @@
   }
 
   // ---------- 分享 ----------
-  function shMsg(k, extra = '') { const el = $('#sh-msg'); el.textContent = k ? `${L.sh.msg[k] || k}${extra}` : ''; el.dataset.kind = k || ''; }
+  // 共用的「已分享」文字是寫給調查頁的（統計在下面、撤回鈕就在旁邊）；首頁的統計在上面、撤回收在摺疊裡，用首頁自己的說法
+  function shMsg(k, extra = '') { const el = $('#sh-msg'); el.textContent = k ? `${(k === 'sent' && H.sh.sent) || L.sh.msg[k] || k}${extra}` : ''; el.dataset.kind = k || ''; }
   function syncSend() { $('#sh-send').disabled = !(mine && $('#sh-ok').checked && tsToken); }
   function renderShare() {
     if (!mine) return;
@@ -268,15 +269,20 @@
   });
 
   // ---------- 傳給朋友 ----------
+  let copyTimer = 0;
   $('#h-sharelink').addEventListener('click', async () => {
     const url = `${location.origin}${location.pathname}`;
     if (navigator.share && matchMedia('(pointer: coarse)').matches) {
-      try { await navigator.share({ title: H.title, url }); return; } catch { /* 取消就改用複製 */ }
+      try { await navigator.share({ title: H.title, url }); return; } catch (e) {
+        if (e && e.name === 'AbortError') return;   // 使用者自己關掉分享面板：什麼都不做，不要偷偷改成複製
+      }
     }
     try { await navigator.clipboard.writeText(url); } catch { prompt('URL', url); return; }
-    const b = $('#h-sharelink');
-    b.textContent = H.fix.copied;
-    setTimeout(() => { b.textContent = H.fix.share; }, 2000);
+    // 結果寫在按鈕旁邊的 role="status"（看得到、螢幕閱讀器也會念），按鈕本身的文字不變
+    const msg = $('#h-copy-msg');
+    clearTimeout(copyTimer);
+    msg.textContent = H.fix.copied;
+    copyTimer = setTimeout(() => { msg.textContent = ''; }, 2500);
   });
 
   function renderAll() {
